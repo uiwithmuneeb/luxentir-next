@@ -58,11 +58,14 @@ export default function Header() {
               {theme === "dark" ? "☀" : "☾"}
             </button>
 
-            <Link className="icon-btn" href="/search">
+            <Link className="icon-btn search-btn" href="/search">
               🔍
             </Link>
 
-            <Link className="icon-btn" href="/wishlist">
+            <Link
+              className="icon-btn wishlist-btn"
+              href="/wishlist"
+            >
               ♡
               {wishlistCount > 0 && (
                 <span className="badge is-visible">
@@ -71,9 +74,16 @@ export default function Header() {
               )}
             </Link>
 
-            <Link className="icon-btn" href="/cart">
+            <Link
+              className="icon-btn cart-btn"
+              href="/cart"
+            >
               🛒
-              {cartCount > 0 && <span className="badge is-visible">{cartCount}</span>}
+              {cartCount > 0 && (
+                <span className="badge is-visible">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             <Link className="account-pill hide-sm" href="/account">
@@ -83,14 +93,14 @@ export default function Header() {
         </div>
 
         <div className={`mobile-menu container ${menuOpen ? "open" : ""}`}>
-          <Link href="/">Home</Link>
-          <Link href="/shop">Shop</Link>
-          <Link href="/collections">Collections</Link>
-          <Link href="/wishlist">Wishlist</Link>
-          <Link href="/cart">Cart</Link>
+          <Link href="/search">Search</Link>
           <Link href="/account">Profile</Link>
           <Link href="/signin">Sign in</Link>
           <Link href="/signup">Sign up</Link>
+          <Link href="/about">About us</Link>
+          <Link href="/privacy-policy">Privacy Policy</Link>
+          <Link href="/terms">Terms & Conditions</Link>
+          <Link href="/exchange-and-returns">Exchange & Returns</Link>
         </div>
       </header>
     </>

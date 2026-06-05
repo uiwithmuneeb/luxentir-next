@@ -5,6 +5,7 @@ import CartProvider from "@/components/providers/CartProvider";
 import WishlistProvider from "@/components/providers/WishlistProvider";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
                 <Header />
                 {children}
                 <Footer />
+                <MobileBottomNav />
               </CartProvider>
             </WishlistProvider>
           </CurrencyProvider>
