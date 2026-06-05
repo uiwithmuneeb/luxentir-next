@@ -1985,3 +1985,88 @@ img {
     display: none !important;
   }
 }
+
+
+.variant-box {
+  margin: 26px 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--card);
+}
+
+.variant-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.variant-head h3 {
+  margin: 0;
+}
+
+.variant-head p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.size-head {
+  margin-top: 24px;
+}
+
+.swatch.active,
+.size.active {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.add-cart-wide {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.fit-guides {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.body-guide {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding-top: 18px;
+}
+
+.body-guide div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.body-guide p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .variant-box {
+    padding: 18px;
+  }
+
+  .add-cart-wide {
+    height: 52px;
+  }
+
+  .body-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-actions .btn {
+    width: 100%;
+  }
+}

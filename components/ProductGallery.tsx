@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-
 export default function ProductGallery({
   images,
   name,
+  activeImage,
+  setActiveImage,
 }: {
   images: string[];
   name: string;
+  activeImage: string;
+  setActiveImage: (image: string) => void;
 }) {
-  const [activeImage, setActiveImage] = useState(images[0]);
-
   return (
     <div className="gallery reveal show">
       <div className="thumbs">
         {images.map((image, index) => (
           <img
-            key={index}
+            key={`${image}-${index}`}
             className={activeImage === image ? "active" : ""}
             src={image}
             alt={`${name} ${index + 1}`}

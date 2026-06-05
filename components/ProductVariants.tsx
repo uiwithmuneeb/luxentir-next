@@ -3,71 +3,72 @@
 import { useState } from "react";
 import { useCart } from "./providers/CartProvider";
 
+const colors = [
+  { name: "Ivory", value: "#f5eee4" },
+  { name: "Black", value: "#111111" },
+  { name: "Gold", value: "#b9935b" },
+];
+
+const sizes = ["XS", "S", "M", "L", "XL"];
+
 export default function ProductVariants({
   productId,
-}: {
-  productId: number;
-}) {
+  image,
+  }: {
+    productId: number;
+    image: string;
+  }) {
   const { addToCart } = useCart();
 
   const [size, setSize] = useState("S");
   const [color, setColor] = useState("Ivory");
 
   return (
-    <>
-      <h3>Color</h3>
+    <div className="variant-box">
+      <div className="variant-head">
+        <div>
+          <h3>Color</h3>
+          <p>{color}</p>
+        </div>
+      </div>
+
+      <div className="swatches">
+        {colors.map((item) => (
+          <button
+            key={item.name}
+            className={`swatch ${color === item.name ? "active" : ""}`}
+            style={{ background: item.value }}
+            onClick={() => setColor(item.name)}
+            aria-label={item.name}
+          />
+        ))}
+      </div>
+
+      <div className="variant-head size-head">
+        <div>
+          <h3>Size</h3>
+          <p>Selected: {size}</p>
+        </div>
+      </div>
 
       <div className="sizes">
-        {["Ivory", "Black", "Gold"].map((item) => (
+        {sizes.map((item) => (
           <button
             key={item}
-            className={`size ${
-              color === item ? "active" : ""
-            }`}
-            onClick={() => setColor(item)}
+            className={`size ${size === item ? "active" : ""}`}
+            onClick={() => setSize(item)}
           >
             {item}
           </button>
         ))}
       </div>
 
-      <h3 style={{ marginTop: 25 }}>
-        Size
-      </h3>
-
-      <div className="sizes">
-        {["XS", "S", "M", "L", "XL"].map(
-          (item) => (
-            <button
-              key={item}
-              className={`size ${
-                size === item ? "active" : ""
-              }`}
-              onClick={() => setSize(item)}
-            >
-              {item}
-            </button>
-          )
-        )}
-      </div>
-
-      <div
-        className="detail-actions"
-        style={{ marginTop: 25 }}
-      >
-        <button
-          className="btn gold"
-          onClick={() =>
-            addToCart(
-              productId,
-              size,
-              color
-            )
-          }
+      <button
+        className="btn gold add-cart-wide"
+        onClick={() => addToCart(productId, size, color, image)}
         >
-          Add To Cart
-        </button>
-      </div>
-    </>
+        Add To Cart
+      </button>
+    </div>
   );
 }
