@@ -1,66 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
+
+const quickSearches = [
+  "Pants",
+  "Shirts",
+  "Blazers",
+  "Co-ords",
+  "Party Wear",
+];
 
 export default function SearchClient() {
   const [query, setQuery] = useState("");
 
-  const filteredProducts = products.filter((product) => {
-    const searchText = `
-      ${product.name}
-      ${product.category}
-      ${product.badge}
-    `.toLowerCase();
+  const filteredProducts = useMemo(() => {
+    const value = query.trim().toLowerCase();
 
-    return searchText.includes(query.toLowerCase());
-  });
+    if (!value) return products;
+
+    return products.filter((product) => {
+      const searchText = `
+        ${product.name}
+        ${product.category}
+        ${product.badge}
+      `.toLowerCase();
+
+      return searchText.includes(value);
+    });
+  }, [query]);
 
   return (
     <main>
-      <section className="search-hero">
-        <div className="container search-hero-grid">
-          <div className="fade-in">
-            <span className="eyebrow">Find your look</span>
-            <h1 className="serif">Search Luxentir</h1>
-            <p>
-              Discover pants, shirts, premium blazers, casual co-ords and party
-              wear through a clean boutique search experience.
-            </p>
-          </div>
+      <section className="inner-hero">
+        <div className="container fade-in">
+          <span className="eyebrow">Search Luxentir</span>
+          <h1>Find your perfect look</h1>
+          <p>
+            Search premium pants, shirts, blazers, co-ord sets and party wear
+            edits.
+          </p>
+        </div>
+      </section>
 
-          <div className="search-panel reveal show">
+      <section className="section">
+        <div className="container">
+          <div className="search-panel">
             <label>Search products</label>
 
             <div className="search-box-pro">
-              <span>🔍</span>
-
+              <span>⌕</span>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Try: pants, blazer, party wear, ivory..."
+                placeholder="Search by product, category or style..."
                 autoFocus
               />
             </div>
 
             <div className="search-chips">
-              <button onClick={() => setQuery("Pants")}>Pants</button>
-              <button onClick={() => setQuery("Shirts")}>Shirts</button>
-              <button onClick={() => setQuery("Blazers")}>Blazers</button>
-              <button onClick={() => setQuery("co-ord")}>Co-ords</button>
-              <button onClick={() => setQuery("party")}>Party wear</button>
+              {quickSearches.map((item) => (
+                <button key={item} onClick={() => setQuery(item)}>
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      <section className="section tight">
-        <div className="container">
           <div className="search-result-head">
             <div>
               <span className="eyebrow">Results</span>
-              <h2 className="serif">Curated matches</h2>
+              <h2>Curated matches</h2>
             </div>
 
             <p className="search-status">
@@ -73,7 +84,11 @@ export default function SearchClient() {
           {filteredProducts.length === 0 ? (
             <div className="empty-state">
               <h3>No products found</h3>
-              <p>Try another keyword like pants, blazer or party wear.</p>
+              <p>Try searching pants, blazer, co-ord or party wear.</p>
+
+              <button className="btn gold" onClick={() => setQuery("")}>
+                Clear Search
+              </button>
             </div>
           ) : (
             <div className="product-grid search-grid">

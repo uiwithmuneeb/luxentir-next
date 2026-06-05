@@ -1,7 +1,12 @@
 import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
 import ProductCard from "@/components/ProductCard";
+import ReelsSection from "@/components/ReelsSection";
 import { products } from "@/data/products";
+import FeaturedCollection from "@/components/FeaturedCollection";
+import WhyLuxentir from "@/components/WhyLuxentir";
+import InstagramGallery from "@/components/InstagramGallery";
+import Newsletter from "@/components/Newsletter";
 
 export default function Home() {
   return (
@@ -10,7 +15,13 @@ export default function Home() {
 
       <Categories />
 
-      <section className="section">
+      <ReelsSection />
+
+      <FeaturedCollection />
+      
+      <WhyLuxentir />
+
+      <section className="section tight">
         <div className="container">
           <div className="section-head">
             <div>
@@ -30,6 +41,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <InstagramGallery />
+
+      <Newsletter />
     </main>
   );
 }

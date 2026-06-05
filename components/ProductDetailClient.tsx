@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductGallery from "@/components/ProductGallery";
 import ProductVariants from "@/components/ProductVariants";
 import AddToWishlistButton from "@/components/AddToWishlistButton";
@@ -25,6 +25,21 @@ export default function ProductDetailClient({
   images: string[];
 }) {
   const [activeImage, setActiveImage] = useState(images[0]);
+  useEffect(() => {
+    const saved = JSON.parse(
+      localStorage.getItem("luxentir-recent") || "[]"
+    );
+
+    const updated = [
+      product.id,
+      ...saved.filter((id: number) => id !== product.id),
+    ].slice(0, 8);
+
+    localStorage.setItem(
+      "luxentir-recent",
+      JSON.stringify(updated)
+    );
+  }, [product.id]);
 
   return (
     <div className="container product-detail">
@@ -104,28 +119,6 @@ export default function ProductDetailClient({
                   </tr>
                 </tbody>
               </table>
-            </div>
-          </details>
-
-          <details className="chart-card">
-            <summary>Body measurement guide</summary>
-            <div className="body-guide">
-              <div>
-                <strong>Bust</strong>
-                <p>Measure around the fullest part of your bust.</p>
-              </div>
-              <div>
-                <strong>Waist</strong>
-                <p>Measure around the narrowest part of your waist.</p>
-              </div>
-              <div>
-                <strong>Hip</strong>
-                <p>Measure around the fullest part of your hips.</p>
-              </div>
-              <div>
-                <strong>Length</strong>
-                <p>Measure from shoulder or waist depending on product type.</p>
-              </div>
             </div>
           </details>
         </div>

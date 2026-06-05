@@ -1,5 +1,3 @@
-import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
 import ShopClient from "@/components/ShopClient";
 
 export default function ShopPage() {

@@ -6,9 +6,11 @@ import { useCart } from "@/components/providers/CartProvider";
 import { useWishlist } from "@/components/providers/WishlistProvider";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import SearchModal from "@/components/SearchModal";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
   const { currency, setCurrency } = useCurrency();
@@ -58,9 +60,13 @@ export default function Header() {
               {theme === "dark" ? "☀" : "☾"}
             </button>
 
-            <Link className="icon-btn search-btn" href="/search">
+            <button
+              className="icon-btn search-btn"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search"
+            >
               🔍
-            </Link>
+            </button>
 
             <Link
               className="icon-btn wishlist-btn"
@@ -103,6 +109,9 @@ export default function Header() {
           <Link href="/exchange-and-returns">Exchange & Returns</Link>
         </div>
       </header>
+      {searchOpen && (
+        <SearchModal onClose={() => setSearchOpen(false)} />
+      )}
     </>
   );
 }

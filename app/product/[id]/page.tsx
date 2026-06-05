@@ -2,6 +2,7 @@ import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import ProductDetailClient from "@/components/ProductDetailClient";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 type ProductPageProps = {
   params: Promise<{
@@ -81,6 +82,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </section>
+      <RecentlyViewed
+        currentProductId={product.id}
+      />
     </main>
   );
 }
