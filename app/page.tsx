@@ -5,8 +5,6 @@ import ReelsSection from "@/components/ReelsSection";
 import { products } from "@/data/products";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import WhyLuxentir from "@/components/WhyLuxentir";
-import InstagramGallery from "@/components/InstagramGallery";
-import Newsletter from "@/components/Newsletter";
 
 export default function Home() {
   return (
@@ -14,8 +12,6 @@ export default function Home() {
       <Hero />
 
       <Categories />
-
-      <ReelsSection />
 
       <FeaturedCollection />
       
@@ -41,9 +37,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <InstagramGallery />
-
-      <Newsletter />
+      <ReelsSection />
+      
     </main>
   );
 }

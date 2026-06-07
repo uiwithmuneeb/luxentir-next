@@ -99,14 +99,37 @@ export default function Header() {
         </div>
 
         <div className={`mobile-menu container ${menuOpen ? "open" : ""}`}>
-          <Link href="/search">Search</Link>
-          <Link href="/account">Profile</Link>
-          <Link href="/signin">Sign in</Link>
-          <Link href="/signup">Sign up</Link>
-          <Link href="/about">About us</Link>
-          <Link href="/privacy-policy">Privacy Policy</Link>
-          <Link href="/terms">Terms & Conditions</Link>
-          <Link href="/exchange-and-returns">Exchange & Returns</Link>
+          <Link href="/search" onClick={() => setMenuOpen(false)}>
+            Search
+          </Link>
+
+          <Link href="/account" onClick={() => setMenuOpen(false)}>
+            Profile
+          </Link>
+
+          <Link href="/signin" onClick={() => setMenuOpen(false)}>
+            Sign in
+          </Link>
+
+          <Link href="/signup" onClick={() => setMenuOpen(false)}>
+            Sign up
+          </Link>
+
+          <Link href="/about" onClick={() => setMenuOpen(false)}>
+            About us
+          </Link>
+
+          <Link href="/privacy-policy" onClick={() => setMenuOpen(false)}>
+            Privacy Policy
+          </Link>
+
+          <Link href="/terms" onClick={() => setMenuOpen(false)}>
+            Terms & Conditions
+          </Link>
+
+          <Link href="/exchange-and-returns" onClick={() => setMenuOpen(false)}>
+            Exchange & Returns
+          </Link>
         </div>
       </header>
       {searchOpen && (

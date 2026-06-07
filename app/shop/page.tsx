@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ShopClient from "@/components/ShopClient";
 
 export default function ShopPage() {
@@ -16,7 +17,9 @@ export default function ShopPage() {
 
       <section className="section">
         <div className="container">
-          <ShopClient />
+          <Suspense fallback={<div className="shop-loading">Loading shop...</div>}>
+            <ShopClient />
+          </Suspense>
         </div>
       </section>
     </main>

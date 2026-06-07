@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ProductCard from "./ProductCard";
 import { products } from "@/data/products";
 
@@ -14,12 +15,22 @@ const categories = [
 ];
 
 export default function ShopClient() {
+  
   const [activeCategory, setActiveCategory] =
     useState("All");
 
   const [search, setSearch] = useState("");
 
   const [sortBy, setSortBy] = useState("default");
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const category = searchParams.get("category");
+
+    if (category && categories.includes(category)) {
+      setActiveCategory(category);
+    }
+  }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -123,14 +134,16 @@ export default function ShopClient() {
         ))}
       </div>
 
-      <p
-        style={{
-          marginBottom: "24px",
-          opacity: 0.7,
-        }}
-      >
-        {filteredProducts.length} products found
-      </p>
+      <div className="shop-result-meta">
+      <span>
+        Showing: <strong>{activeCategory}</strong>
+      </span>
+
+      <span>
+        {filteredProducts.length}{" "}
+        {filteredProducts.length === 1 ? "product" : "products"} found
+      </span>
+    </div>
 
       <div className="product-grid">
         {filteredProducts.map((product) => (

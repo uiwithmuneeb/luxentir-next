@@ -68,7 +68,7 @@ export default function ProductDetailClient({
         <ProductVariants productId={product.id} image={activeImage} />
 
         <div className="fit-guides">
-          <details className="chart-card" open>
+          <details className="chart-card">
             <summary>Size chart</summary>
             <div className="table-wrap">
               <table>

@@ -33,8 +33,8 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
 
         <div className="product-badges">
-          <span className="label">{product.badge}</span>
           {discount > 0 && <span className="discount-badge">-{discount}%</span>}
+          <span className="label">{product.badge}</span>
         </div>
 
         <button

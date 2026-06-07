@@ -27,13 +27,16 @@ export default function ReelsSection() {
       <div className="container">
         <div className="section-head">
           <div>
-            <span className="eyebrow">Watch & Shop</span>
-            <h2>Style Reels</h2>
+            <span className="eyebrow">Follow @Luxentir</span>
+            <h2>Instagram Reels</h2>
           </div>
-          <p>
-            Explore Luxentir styling moments through premium 9:16 campaign
-            videos.
-          </p>
+          <a
+            href="https://www.instagram.com/"
+            target="_blank"
+            className="btn ghost"
+          >
+            Visit Instagram
+          </a>
         </div>
 
         <div className="reels-grid">
