@@ -14,12 +14,21 @@ type OrderData = {
     address: string;
     notes: string;
   };
+  items: {
+    name: string;
+    size: string;
+    color: string;
+    quantity: number;
+    price: number;
+  }[];
   total: number;
 };
 
 export default function OrderSuccessPage() {
   const { formatPrice } = useCurrency();
   const [order, setOrder] = useState<OrderData | null>(null);
+
+  const whatsappNumber = "923395211000";
 
   useEffect(() => {
     const saved = localStorage.getItem("luxentir-last-order");
@@ -28,6 +37,46 @@ export default function OrderSuccessPage() {
       setOrder(JSON.parse(saved));
     }
   }, []);
+
+  const createWhatsAppLink = () => {
+    if (!order) return "#";
+
+    const itemsText = order.items
+      .map(
+        (item, index) =>
+          `${index + 1}. ${item.name}
+Size: ${item.size}
+Color: ${item.color}
+Qty: ${item.quantity}
+Price: ${formatPrice(item.price * item.quantity)}`
+      )
+      .join("\n\n");
+
+    const message = `Hello Luxentir,
+
+I want to confirm my Cash on Delivery order.
+
+Order Number: ${order.orderNumber}
+
+Customer Details:
+Name: ${order.customer.name}
+Phone: ${order.customer.phone}
+Email: ${order.customer.email || "N/A"}
+City: ${order.customer.city}
+Address: ${order.customer.address}
+Notes: ${order.customer.notes || "N/A"}
+
+Order Items:
+${itemsText}
+
+Total: ${formatPrice(order.total)}
+
+Payment Method: Cash on Delivery`;
+
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+  };
 
   return (
     <main>
@@ -70,7 +119,18 @@ export default function OrderSuccessPage() {
             )}
 
             <div className="order-actions">
-              <Link href="/shop" className="btn gold">
+              {order && (
+                <a
+                  href={createWhatsAppLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn gold"
+                >
+                  Send Order on WhatsApp
+                </a>
+              )}
+
+              <Link href="/shop" className="btn ghost">
                 Continue Shopping
               </Link>
 

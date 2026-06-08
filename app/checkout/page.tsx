@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const { formatPrice } = useCurrency();
 
   const [form, setForm] = useState({
@@ -55,7 +55,7 @@ export default function CheckoutPage() {
         total: subtotal,
       })
     );
-
+    clearCart();
     router.push("/order-success");
   };
 

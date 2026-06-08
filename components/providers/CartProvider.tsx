@@ -18,14 +18,17 @@ type CartContextType = {
     color: string,
     image: string
   ) => void;
-    removeFromCart: (
+  removeFromCart: (
     id: number,
     size: string,
     color: string,
     image: string
   ) => void;
+  clearCart: () => void;
   cartCount: number;
 };
+
+
 
 const CartContext = createContext<CartContextType | null>(null);
 
@@ -106,16 +109,21 @@ export default function CartProvider({
       );
     };
 
+    const clearCart = () => {
+      setCart([]);
+    };
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        cartCount,
-      }}
+      cart,
+      addToCart,
+      removeFromCart,
+      clearCart,
+      cartCount,
+    }}
     >
       {children}
     </CartContext.Provider>
