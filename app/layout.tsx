@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import CartProvider from "@/components/providers/CartProvider";
 import WishlistProvider from "@/components/providers/WishlistProvider";
 import CurrencyProvider from "@/components/providers/CurrencyProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import MobileBottomNav from "@/components/MobileBottomNav";
+import SiteShell from "@/components/SiteShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,10 +23,7 @@ export default function RootLayout({
           <CurrencyProvider>
             <WishlistProvider>
               <CartProvider>
-                <Header />
-                {children}
-                <Footer />
-                <MobileBottomNav />
+                <SiteShell>{children}</SiteShell>
               </CartProvider>
             </WishlistProvider>
           </CurrencyProvider>
