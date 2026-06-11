@@ -1,29 +1,47 @@
+import { prisma } from "@/lib/prisma";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminStats from "@/components/admin/AdminStats";
 
-const recentOrders = [
-  {
-    id: "LX-104221",
-    customer: "Sarah Khan",
-    total: "PKR 32,804",
-    status: "Pending",
-  },
-  {
-    id: "LX-104198",
-    customer: "Ayesha Malik",
-    total: "PKR 55,044",
-    status: "Confirmed",
-  },
-  {
-    id: "LX-104166",
-    customer: "Maham Ali",
-    total: "PKR 20,016",
-    status: "Delivered",
-  },
-];
+export default async function AdminPage() {
+  let totalProducts = 0;
+  let totalOrders = 0;
+  let pendingOrders = 0;
+  let totalCustomers = 0;
+  let revenue = 0;
+  let recentOrders: any[] = [];
 
-export default function AdminPage() {
+  try {
+    totalProducts = await prisma.product.count();
+
+    totalOrders = await prisma.order.count();
+
+    pendingOrders = await prisma.order.count({
+      where: {
+        status: "Pending",
+      },
+    });
+
+    totalCustomers = await prisma.customer.count();
+
+    const revenueData = await prisma.order.aggregate({
+      _sum: {
+        total: true,
+      },
+    });
+
+    revenue = revenueData._sum.total || 0;
+
+    recentOrders = await prisma.order.findMany({
+      take: 5,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (error) {
+    console.error("ADMIN DASHBOARD ERROR:", error);
+  }
+
   return (
     <main className="admin-shell">
       <AdminSidebar />
@@ -34,7 +52,13 @@ export default function AdminPage() {
           subtitle="Manage products, orders, customers and Luxentir storefront content."
         />
 
-        <AdminStats />
+        <AdminStats
+          totalProducts={totalProducts}
+          totalOrders={totalOrders}
+          pendingOrders={pendingOrders}
+          totalCustomers={totalCustomers}
+          revenue={revenue}
+        />
 
         <div className="admin-grid">
           <div className="admin-panel">
@@ -44,29 +68,35 @@ export default function AdminPage() {
             </div>
 
             <div className="admin-table">
-              {recentOrders.map((order) => (
-                <div className="admin-table-row" key={order.id}>
-                  <strong>{order.id}</strong>
-                  <span>{order.customer}</span>
-                  <span>{order.total}</span>
-                  <em>{order.status}</em>
-                </div>
-              ))}
+              {recentOrders.length === 0 ? (
+                <p>No orders found.</p>
+              ) : (
+                recentOrders.map((order) => (
+                  <div className="admin-table-row" key={order.id}>
+                    <strong>{order.orderNumber}</strong>
+                    <span>{order.customerName}</span>
+                    <span>
+                      PKR {order.total.toLocaleString()}
+                    </span>
+                    <em>{order.status}</em>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
           <div className="admin-panel">
             <div className="admin-panel-head">
-              <h2>CMS Controls</h2>
-              <span>Upcoming editable sections</span>
+              <h2>Store Summary</h2>
+              <span>Current database status</span>
             </div>
 
             <div className="admin-task-list">
-              <p>✓ Product management</p>
-              <p>✓ Order management</p>
-              <p>✓ Homepage banner control</p>
-              <p>✓ Reels and content updates</p>
-              <p>✓ WhatsApp and store settings</p>
+              <p>✓ Products: {totalProducts}</p>
+              <p>✓ Orders: {totalOrders}</p>
+              <p>✓ Customers: {totalCustomers}</p>
+              <p>✓ Pending Orders: {pendingOrders}</p>
+              <p>✓ Revenue: PKR {revenue.toLocaleString()}</p>
             </div>
           </div>
         </div>

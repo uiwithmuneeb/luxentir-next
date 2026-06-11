@@ -41,22 +41,38 @@ export default function CheckoutPage() {
     0
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    const orderNumber = `LX-${Date.now().toString().slice(-6)}`;
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer: form,
+          items: cartProducts,
+          total: subtotal,
+        }),
+      });
 
-    localStorage.setItem(
-      "luxentir-last-order",
-      JSON.stringify({
-        orderNumber,
-        customer: form,
-        items: cartProducts,
-        total: subtotal,
-      })
-    );
-    clearCart();
-    router.push("/order-success");
+      const order = await response.json();
+
+      localStorage.setItem(
+        "luxentir-last-order",
+        JSON.stringify(order)
+      );
+
+      clearCart();
+
+      router.push("/order-success");
+    } catch (error) {
+      console.error("ORDER ERROR:", error);
+      alert("Order could not be placed.");
+    }
   };
 
   return (

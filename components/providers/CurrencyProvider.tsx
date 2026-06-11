@@ -22,24 +22,23 @@ export default function CurrencyProvider({
   const [currency, setCurrencyState] = useState<Currency>("PKR");
 
   useEffect(() => {
-    const saved = localStorage.getItem("luxentir-currency") as Currency | null;
-
-    if (saved === "PKR" || saved === "USD") {
-      setCurrencyState(saved);
-    }
-  }, []);
+  localStorage.setItem("luxentir-currency", "PKR");
+  setCurrencyState("PKR");
+}, []);
 
   const setCurrency = (value: Currency) => {
     setCurrencyState(value);
     localStorage.setItem("luxentir-currency", value);
   };
 
-  const formatPrice = (price: number) => {
+ const formatPrice = (price?: number | null) => {
+    const safePrice = Number(price || 0);
+
     if (currency === "PKR") {
-      return `PKR ${(price * PKR_RATE).toLocaleString()}`;
+      return `PKR ${safePrice.toLocaleString()}`;
     }
 
-    return `$${price.toFixed(2)}`;
+    return `$${(safePrice / PKR_RATE).toFixed(2)}`;
   };
 
   return (

@@ -3690,3 +3690,139 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+
+.admin-logout-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.admin-logout-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.admin-form-message {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-empty-state {
+  padding: 18px;
+  border: 1px dashed #e7dccd;
+  border-radius: 16px;
+  background: #fffaf4;
+  color: #8a7c6c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-orders-row select.admin-order-status {
+  border: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.55);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.admin-order-modal {
+  width: min(860px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  border-radius: 22px;
+  background: #fffaf4;
+  border: 1px solid #eadfce;
+  padding: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+}
+
+.admin-order-detail-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.admin-order-detail-grid > div,
+.admin-order-items {
+  border: 1px solid #efe5da;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.admin-order-detail-grid h3,
+.admin-order-items h3 {
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.admin-order-detail-grid p {
+  margin: 7px 0;
+  font-size: 13px;
+  color: #5f5448;
+}
+
+.admin-order-items {
+  margin-top: 16px;
+}
+
+.admin-order-item {
+  display: grid;
+  grid-template-columns: 54px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #efe5da;
+}
+
+.admin-order-item:first-of-type {
+  border-top: 0;
+}
+
+.admin-order-item img {
+  width: 54px;
+  height: 66px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.admin-order-item strong,
+.admin-order-item span {
+  font-size: 13px;
+}
+
+.admin-order-item p {
+  margin: 4px 0 0;
+  color: #7b6f62;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .admin-order-detail-grid,
+  .admin-order-item {
+    grid-template-columns: 1fr;
+  }
+}

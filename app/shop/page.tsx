@@ -1,7 +1,26 @@
 import { Suspense } from "react";
+import { prisma } from "@/lib/prisma";
 import ShopClient from "@/components/ShopClient";
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  let products: any[] = [];
+
+  try {
+    products = await prisma.product.findMany({
+      where: {
+        status: "Active",
+      },
+      include: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (error) {
+    console.error("SHOP PRODUCTS ERROR:", error);
+  }
+
   return (
     <main>
       <section className="inner-hero">
@@ -18,7 +37,7 @@ export default function ShopPage() {
       <section className="section">
         <div className="container">
           <Suspense fallback={<div className="shop-loading">Loading shop...</div>}>
-            <ShopClient />
+            <ShopClient products={products} />
           </Suspense>
         </div>
       </section>

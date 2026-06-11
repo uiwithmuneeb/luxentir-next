@@ -1,27 +1,44 @@
-const stats = [
-  {
-    label: "Total Products",
-    value: "24",
-    note: "Demo products",
-  },
-  {
-    label: "Total Orders",
-    value: "128",
-    note: "COD orders",
-  },
-  {
-    label: "Pending Orders",
-    value: "12",
-    note: "Needs confirmation",
-  },
-  {
-    label: "Revenue",
-    value: "PKR 485K",
-    note: "Demo revenue",
-  },
-];
+export default function AdminStats({
+  totalProducts,
+  totalOrders,
+  pendingOrders,
+  totalCustomers,
+  revenue,
+}: {
+  totalProducts: number;
+  totalOrders: number;
+  pendingOrders: number;
+  totalCustomers: number;
+  revenue: number;
+}) {
+  const stats = [
+    {
+      label: "Total Products",
+      value: totalProducts.toLocaleString(),
+      note: "Store products",
+    },
+    {
+      label: "Total Orders",
+      value: totalOrders.toLocaleString(),
+      note: "COD orders",
+    },
+    {
+      label: "Pending Orders",
+      value: pendingOrders.toLocaleString(),
+      note: "Needs confirmation",
+    },
+    {
+      label: "Total Customers",
+      value: totalCustomers.toLocaleString(),
+      note: "Registered buyers",
+    },
+    {
+      label: "Revenue",
+      value: `PKR ${revenue.toLocaleString()}`,
+      note: "Total sales",
+    },
+  ];
 
-export default function AdminStats() {
   return (
     <div className="admin-stats">
       {stats.map((item) => (

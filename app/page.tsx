@@ -1,12 +1,31 @@
+import { prisma } from "@/lib/prisma";
 import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
 import ProductCard from "@/components/ProductCard";
 import ReelsSection from "@/components/ReelsSection";
-import { products } from "@/data/products";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import WhyLuxentir from "@/components/WhyLuxentir";
 
-export default function Home() {
+export default async function Home() {
+  let products: any[] = [];
+  try {
+  products = await prisma.product.findMany({
+    where: {
+      status: "Active",
+      featured: true,
+      },
+      include: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 8,
+    });
+  } catch (error) {
+    console.error("HOME PRODUCTS ERROR:", error);
+  }
+
   return (
     <main>
       <Hero />
@@ -14,7 +33,7 @@ export default function Home() {
       <Categories />
 
       <FeaturedCollection />
-      
+
       <WhyLuxentir />
 
       <section className="section tight">
@@ -32,13 +51,12 @@ export default function Home() {
 
           <div className="product-grid">
             {products.map((product) => (
-              <ProductCard product={product} key={product.id} />
+              <ProductCard product={product as any} key={product.id} />
             ))}
           </div>
         </div>
       </section>
       <ReelsSection />
-      
     </main>
   );
 }

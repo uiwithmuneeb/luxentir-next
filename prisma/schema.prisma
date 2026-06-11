@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  slug      String    @unique
+  image     String?
+  status    String    @default("Active")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id           Int         @id @default(autoincrement())
+  name         String
+  slug         String      @unique
+  categoryId   Int?
+  price        Float
+  comparePrice Float?
+  badge        String?
+  description  String      @db.LongText
+  image        String
+  gallery      String?     @db.LongText
+  sizes        String?     @db.LongText
+  colors       String?     @db.LongText
+  stock        Int         @default(0)
+  status       String      @default("Active")
+  featured     Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+  category     Category?   @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId], map: "Product_categoryId_fkey")
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?  @unique
+  phone     String   @unique
+  city      String?
+  address   String?  @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  orderNumber  String      @unique
+  customerId   Int?
+  customerName String
+  phone        String
+  email        String?
+  city         String
+  address      String      @db.LongText
+  notes        String?     @db.LongText
+  total        Float
+  payment      String      @default("COD")
+  status       String      @default("Pending")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  customer     Customer?   @relation(fields: [customerId], references: [id])
+  items        OrderItem[]
+
+  @@index([customerId], map: "Order_customerId_fkey")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int?
+  name      String
+  price     Float
+  quantity  Int
+  size      String?
+  color     String?
+  image     String?
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id])
+
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+  @@index([productId], map: "OrderItem_productId_fkey")
+}
+
+model HomepageSection {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  title     String?
+  subtitle  String?
+  content   String?  @db.LongText
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reel {
+  id        Int      @id @default(autoincrement())
+  title     String
+  videoUrl  String   @db.LongText
+  image     String?
+  status    String   @default("Active")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StoreSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String   @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

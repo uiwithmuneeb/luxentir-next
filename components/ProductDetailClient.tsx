@@ -9,12 +9,19 @@ import ProductPrice from "@/components/ProductPrice";
 type Product = {
   id: number;
   name: string;
-  category: string;
+  category:
+    | string
+    | {
+        name: string;
+      }
+    | null;
   price: number;
-  oldPrice: number;
+  comparePrice?: number | null;
+  oldPrice?: number | null;
   image: string;
   images?: string[];
-  badge: string;
+  badge?: string | null;
+  description?: string | null;
 };
 
 export default function ProductDetailClient({
@@ -58,14 +65,24 @@ export default function ProductDetailClient({
           ★★★★★ <span style={{ color: "var(--muted)" }}>4.9 • 38 reviews</span>
         </div>
 
-        <ProductPrice price={product.price} oldPrice={product.oldPrice} />
+        <ProductPrice
+          price={product.price}
+          oldPrice={product.comparePrice}
+        />
 
-        <p>
-          Premium western silhouette with elegant Luxentir finishing. Designed
-          for polished day styling, dinner looks and luxury everyday wear.
-        </p>
+        <p>{product.description}</p>
 
-        <ProductVariants productId={product.id} image={activeImage} />
+        <ProductVariants
+          productId={product.id}
+          name={product.name}
+          category={
+            typeof product.category === "string"
+              ? product.category
+              : product.category?.name || "Uncategorized"
+          }
+          price={product.price}
+          image={activeImage}
+        />
 
         <div className="fit-guides">
           <details className="chart-card">

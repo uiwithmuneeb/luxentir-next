@@ -1,4 +1,4 @@
-import { products } from "@/data/products";
+import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import ProductDetailClient from "@/components/ProductDetailClient";
@@ -13,7 +13,14 @@ type ProductPageProps = {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
 
-  const product = products.find((item) => item.id === Number(id));
+  const product = await prisma.product.findUnique({
+    where: {
+      id: Number(id),
+    },
+    include: {
+      category: true,
+    },
+  });
 
   if (!product) {
     return (
@@ -33,6 +40,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
     );
   }
 
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      id: {
+        not: product.id,
+      },
+      status: "Active",
+    },
+    include: {
+      category: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 4,
+  });
+
+  const galleryImages = Array.isArray(product.gallery)
+    ? product.gallery.filter((item): item is string => typeof item === "string")
+    : [];
+
+  const productImages: string[] =
+    galleryImages.length > 0
+      ? [product.image, ...galleryImages]
+      : [product.image, product.image, product.image, product.image];
+
   return (
     <main>
       <section className="inner-hero">
@@ -48,15 +80,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <section className="section">
         <ProductDetailClient
-          product={product}
-          images={
-            product.images || [
-              product.image,
-              product.image,
-              product.image,
-              product.image,
-            ]
-          }
+          product={product as any}
+          images={productImages}
         />
       </section>
 
@@ -73,18 +98,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           <div className="product-grid">
-            {products
-              .filter((item) => item.id !== product.id)
-              .slice(0, 4)
-              .map((item) => (
-                <ProductCard product={item} key={item.id} />
-              ))}
+            {relatedProducts.map((item) => (
+              <ProductCard product={item as any} key={item.id} />
+            ))}
           </div>
         </div>
       </section>
-      <RecentlyViewed
-        currentProductId={product.id}
-      />
+
+      <RecentlyViewed currentProductId={product.id} />
     </main>
   );
 }

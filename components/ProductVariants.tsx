@@ -13,11 +13,17 @@ const sizes = ["XS", "S", "M", "L", "XL"];
 
 export default function ProductVariants({
   productId,
+  name,
+  category,
+  price,
   image,
-  }: {
-    productId: number;
-    image: string;
-  }) {
+}: {
+  productId: number;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+}) {
   const { addToCart } = useCart();
 
   const [size, setSize] = useState("S");
@@ -65,8 +71,18 @@ export default function ProductVariants({
 
       <button
         className="btn gold add-cart-wide"
-        onClick={() => addToCart(productId, size, color, image)}
-        >
+        onClick={() =>
+          addToCart({
+            id: productId,
+            name,
+            category,
+            price,
+            size,
+            color,
+            image,
+          })
+        }
+      >
         Add To Cart
       </button>
     </div>

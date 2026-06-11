@@ -9,11 +9,16 @@ import QuickViewModal from "@/components/QuickViewModal";
 type Product = {
   id: number;
   name: string;
-  category: string;
+  category:
+    | string
+    | {
+        name: string;
+      };
   price: number;
-  oldPrice: number;
+  comparePrice?: number | null;
+  oldPrice?: number | null;
   image: string;
-  badge: string;
+  badge?: string | null;
 };
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -21,9 +26,17 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToWishlist } = useWishlist();
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
-  const discount = Math.round(
-    ((product.oldPrice - product.price) / product.oldPrice) * 100
-  );
+  const oldPrice = product.oldPrice ?? product.comparePrice ?? product.price;
+  const categoryName =
+    typeof product.category === "string"
+      ? product.category
+      : product.category.name;
+
+  const discount =
+    oldPrice > product.price
+      ? Math.round(((oldPrice - product.price) / oldPrice) * 100)
+      : 0;
+
 
   return (
     <article className="product-card reveal show">
@@ -54,7 +67,7 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="product-info">
-        <span className="cat">{product.category}</span>
+        <span className="cat">{categoryName}</span>
 
         <h3>
           <Link href={`/product/${product.id}`}>{product.name}</Link>
@@ -66,7 +79,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="price">
           <span>{formatPrice(product.price)}</span>
-          <span className="old">{formatPrice(product.oldPrice)}</span>
+          {oldPrice > product.price && (
+            <span className="old">{formatPrice(oldPrice)}</span>
+          )}
         </div>
 
         <Link href={`/product/${product.id}`} className="btn ghost product-view-btn">

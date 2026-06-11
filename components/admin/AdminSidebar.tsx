@@ -1,4 +1,8 @@
+
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const adminLinks = [
   {
@@ -34,6 +38,16 @@ const adminLinks = [
 ];
 
 export default function AdminSidebar() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", {
+      method: "POST",
+    });
+
+    router.push("/admin/login");
+    router.refresh();
+  };
   return (
     <aside className="admin-sidebar">
       <div className="admin-brand">
@@ -51,10 +65,17 @@ export default function AdminSidebar() {
       </nav>
 
       <div className="admin-sidebar-footer">
-        <Link href="/" className="admin-store-link">
-          View Store
-        </Link>
-      </div>
+      <Link href="/" className="admin-store-link">
+        View Store
+      </Link>
+
+      <button
+        onClick={handleLogout}
+        className="admin-logout-btn"
+      >
+        Logout
+      </button>
+    </div>
     </aside>
   );
 }
