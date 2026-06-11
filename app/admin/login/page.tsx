@@ -28,7 +28,6 @@ export default function AdminLoginPage() {
     });
 
     const data = await res.json();
-
     setLoading(false);
 
     if (!res.ok) {
@@ -41,39 +40,72 @@ export default function AdminLoginPage() {
 
   return (
     <main className="admin-login-page">
-      <form className="admin-login-card" onSubmit={handleLogin}>
-        <span className="eyebrow">Luxentir Admin</span>
-        <h1>CMS Login</h1>
-        <p>Sign in to manage products, orders and storefront content.</p>
+      <div className="admin-login-bg">
+        <span />
+        <span />
+        <span />
+      </div>
 
-        <input
-          className="field"
-          type="email"
-          placeholder="Admin email"
-          required
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
+      <section className="admin-login-shell">
+        <div className="admin-login-brand">
+          <span className="eyebrow">Luxentir Admin</span>
+          <h1>Luxury CMS Control Center</h1>
+          <p>
+            Manage products, orders, customers and premium storefront content
+            from one secure dashboard.
+          </p>
 
-        <input
-          className="field"
-          type="password"
-          placeholder="Password"
-          required
-          value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
-        />
+          <div className="admin-login-points">
+            <span>✓ Product Management</span>
+            <span>✓ COD Orders</span>
+            <span>✓ Customer Records</span>
+          </div>
+        </div>
 
-        {error && <p className="admin-login-error">{error}</p>}
+        <form className="admin-login-card" onSubmit={handleLogin}>
+          <div className="admin-login-logo">L</div>
 
-        <button className="btn gold" type="submit" disabled={loading}>
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
+          <span className="eyebrow">Secure Access</span>
+          <h2>Sign in to CMS</h2>
+          <p>Use your admin credentials to continue.</p>
+
+          <label>
+            <span>Email Address</span>
+            <input
+              type="email"
+              placeholder="admin@luxentir.com"
+              required
+              value={form.email}
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })
+              }
+            />
+          </label>
+
+          <label>
+            <span>Password</span>
+            <input
+              type="password"
+              placeholder="Enter password"
+              required
+              value={form.password}
+              onChange={(e) =>
+                setForm({ ...form, password: e.target.value })
+              }
+            />
+          </label>
+
+          {error && <p className="admin-login-error">{error}</p>}
+
+          <button className="btn gold admin-login-btn" type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
+          <p className="admin-login-note">
+            Protected admin area for Luxentir CMS management.
+          </p>
+        </form>
+      </section>
     </main>
   );
 }
