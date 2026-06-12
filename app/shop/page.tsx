@@ -1,5 +1,6 @@
-import { Suspense } from "react";
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
 import ShopClient from "@/components/ShopClient";
 
 export default async function ShopPage() {
