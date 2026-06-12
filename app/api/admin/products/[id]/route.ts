@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 function slugify(value: string) {
@@ -17,6 +18,8 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
+    const categorySlug = slugify(body.category || "Uncategorized");
+
     const product = await prisma.product.update({
       where: {
         id: Number(id),
@@ -26,30 +29,35 @@ export async function PUT(
         slug: slugify(body.name),
         price: Number(body.price),
         comparePrice: body.comparePrice ? Number(body.comparePrice) : null,
-        badge: body.badge,
-        status: body.status,
-        image: body.image,
-        description: body.description,
+        badge: body.badge || "NEW",
+        status: body.status || "Active",
+        image: body.image || "",
+        description: body.description || "",
         category: {
           connectOrCreate: {
             where: {
-              slug: slugify(body.category),
+              slug: categorySlug,
             },
             create: {
-              name: body.category,
-              slug: slugify(body.category),
+              name: body.category || "Uncategorized",
+              slug: categorySlug,
             },
           },
         },
       },
     });
 
+    revalidatePath("/");
+    revalidatePath("/shop");
+    revalidatePath("/admin/products");
+    revalidatePath(`/product/${product.id}`);
+
     return NextResponse.json(product);
   } catch (error) {
     console.error("UPDATE PRODUCT ERROR:", error);
 
     return NextResponse.json(
-      { message: "Product could not be updated" },
+      { message: "Product could not be updated", error: String(error) },
       { status: 500 }
     );
   }
@@ -68,6 +76,10 @@ export async function DELETE(
       },
     });
 
+    revalidatePath("/");
+    revalidatePath("/shop");
+    revalidatePath("/admin/products");
+
     return NextResponse.json({
       message: "Product deleted successfully",
     });
@@ -75,7 +87,7 @@ export async function DELETE(
     console.error("DELETE PRODUCT ERROR:", error);
 
     return NextResponse.json(
-      { message: "Product could not be deleted" },
+      { message: "Product could not be deleted", error: String(error) },
       { status: 500 }
     );
   }
