@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
-import { products } from "@/data/products";
 import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
@@ -20,24 +20,19 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  const cartProducts = cart
-    .map((item) => {
-      const product = products.find((p) => p.id === item.id);
+  const [cartProducts, setCartProducts] = useState<any[]>([]);
 
-      if (!product) return null;
+  useEffect(() => {
+    const selected = localStorage.getItem("luxentir-selected-cart");
 
-      return {
-        ...product,
-        quantity: item.quantity,
-        size: item.size || "S",
-        color: item.color || "Ivory",
-        image: item.image || product.image,
-      };
-    })
-    .filter((item) => item !== null);
+    if (selected) {
+      setCartProducts(JSON.parse(selected));
+    }
+  }, []);
 
   const subtotal = cartProducts.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) =>
+      total + Number(item.price) * Number(item.quantity),
     0
   );
 

@@ -134,6 +134,36 @@ Payment Method: Cash on Delivery`;
                   <strong>{formatPrice(order.total)}</strong>
                 </div>
               </div>
+              
+            )}
+
+            {order && order.items.length > 0 && (
+              <div className="order-products">
+                <h3>Purchased Items ({order.items.length})</h3>
+
+                {order?.items?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="order-product-row"
+                  >
+                    <div>
+                      <strong>{item.name}</strong>
+
+                      <p>
+                        {item.size} / {item.color}
+                      </p>
+
+                      <p>
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+
+                    <strong>
+                      {formatPrice(item.price * item.quantity)}
+                    </strong>
+                  </div>
+                ))}
+              </div>
             )}
 
             <div className="order-actions">

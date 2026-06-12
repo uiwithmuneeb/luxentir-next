@@ -34,9 +34,7 @@ export default async function Home() {
 
       <FeaturedCollection />
 
-      <WhyLuxentir />
-
-      <section className="section tight">
+       <section className="section tight">
         <div className="container">
           <div className="section-head">
             <div>
@@ -56,6 +54,12 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      
+
+      <WhyLuxentir />
+
+     
       <ReelsSection />
     </main>
   );

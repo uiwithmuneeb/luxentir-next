@@ -56,14 +56,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
     take: 4,
   });
 
-  const galleryImages = Array.isArray(product.gallery)
-    ? product.gallery.filter((item): item is string => typeof item === "string")
-    : [];
+ let galleryImages: string[] = [];
 
-  const productImages: string[] =
-    galleryImages.length > 0
-      ? [product.image, ...galleryImages]
-      : [product.image, product.image, product.image, product.image];
+  try {
+    galleryImages = product.gallery
+      ? JSON.parse(product.gallery)
+      : [];
+  } catch {
+    galleryImages = product.gallery
+      ? product.gallery
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [];
+  }
+
+  const productImages: string[] = [
+    product.image,
+    ...galleryImages,
+  ].filter(Boolean);
 
   return (
     <main>
