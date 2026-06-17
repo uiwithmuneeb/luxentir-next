@@ -16,6 +16,16 @@ const adminLinks = [
     icon: "◇",
   },
   {
+    label: "Hero Banners",
+    href: "/admin/banners",
+    icon: "🖼️",
+  },
+  {
+    label: "Reels",
+    href: "/admin/reels",
+    icon: "🎬",
+  },
+  {
     label: "Orders",
     href: "/admin/orders",
     icon: "◎",

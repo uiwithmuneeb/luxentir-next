@@ -1,26 +1,16 @@
-export default function ReelsSection() {
-  const reels = [
-    {
-      id: 1,
-      title: "Summer Collection",
-      video: "https://www.pexels.com/download/video/32415030/",
-    },
-    {
-      id: 2,
-      title: "Party Wear",
-      video: "https://www.pexels.com/download/video/5561960/",
-    },
-    {
-      id: 3,
-      title: "Co-ord Sets",
-      video: "https://www.pexels.com/download/video/30927622/",
-    },
-    {
-      id: 4,
-      title: "Office Chic",
-      video: "https://www.pexels.com/download/video/27247335/",
-    },
-  ];
+type Reel = {
+  id: number;
+  title: string;
+  videoUrl: string;
+  image?: string | null;
+};
+
+export default function ReelsSection({
+  reels = [],
+}: {
+  reels?: Reel[];
+}) {
+  if (!reels.length) return null;
 
   return (
     <section className="section">
@@ -30,6 +20,7 @@ export default function ReelsSection() {
             <span className="eyebrow">Follow @Luxentir</span>
             <h2>Instagram Reels</h2>
           </div>
+
           <a
             href="https://www.instagram.com/"
             target="_blank"
@@ -41,11 +32,29 @@ export default function ReelsSection() {
 
         <div className="reels-grid">
           {reels.map((reel) => (
-            <div className="reel-card" key={reel.id}>
-              <video src={reel.video} muted loop playsInline autoPlay />
+            <a
+              key={reel.id}
+              href={reel.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reel-card"
+            >
+              {reel.image ? (
+                <img
+                  src={reel.image}
+                  alt={reel.title}
+                  className="reel-thumb"
+                />
+              ) : (
+                <div className="reel-placeholder">
+                  🎬
+                </div>
+              )}
 
-              <div className="reel-overlay">{reel.title}</div>
-            </div>
+              <div className="reel-overlay">
+                {reel.title}
+              </div>
+            </a>
           ))}
         </div>
       </div>

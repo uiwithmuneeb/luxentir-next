@@ -4317,3 +4317,119 @@ img {
   color: #7d7468;
   font-size: 14px;
 }
+
+.admin-reels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.admin-reel-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #eadfce;
+  border-radius: 22px;
+  background: #fffaf4;
+}
+
+.admin-reel-thumb {
+  width: 110px;
+  height: 150px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f2eadf;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+}
+
+.admin-reel-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-reel-card h3 {
+  margin: 0 0 8px;
+}
+
+.admin-reel-card p {
+  margin: 4px 0;
+  color: #8b7d6f;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .admin-reels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reel-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reel-placeholder {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  background: #f5f1ea;
+}
+
+.reel-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  text-decoration: none;
+}
+
+.reel-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.7),
+    rgba(0,0,0,0)
+  );
+}
+
+
+.hero-slide {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+.hero-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hero-dots button {
+  width: 28px;
+  height: 4px;
+  border: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+.hero-dots button.active {
+  background: #fff;
+}

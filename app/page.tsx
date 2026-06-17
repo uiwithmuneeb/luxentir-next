@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
@@ -9,11 +10,14 @@ import WhyLuxentir from "@/components/WhyLuxentir";
 
 export default async function Home() {
   let products: any[] = [];
+  let reels: any[] = [];
+  let banners: any[] = [];
+
   try {
-  products = await prisma.product.findMany({
-    where: {
-      status: "Active",
-      featured: true,
+    products = await prisma.product.findMany({
+      where: {
+        status: "Active",
+        featured: true,
       },
       include: {
         category: true,
@@ -23,19 +27,38 @@ export default async function Home() {
       },
       take: 8,
     });
+
+    reels = await prisma.reel.findMany({
+      where: {
+        status: "Active",
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+      take: 8,
+    });
+
+    banners = await prisma.heroBanner.findMany({
+      where: {
+        status: "Active",
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+    });
   } catch (error) {
-    console.error("HOME PRODUCTS ERROR:", error);
+    console.error("HOME DATA ERROR:", error);
   }
 
   return (
     <main>
-      <Hero />
+      <Hero banners={banners} />
 
       <Categories />
 
       <FeaturedCollection />
 
-       <section className="section tight">
+      <section className="section tight">
         <div className="container">
           <div className="section-head">
             <div>
@@ -56,12 +79,9 @@ export default async function Home() {
         </div>
       </section>
 
-      
-
       <WhyLuxentir />
 
-     
-      <ReelsSection />
+      <ReelsSection reels={reels} />
     </main>
   );
 }
