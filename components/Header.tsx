@@ -8,9 +8,18 @@ import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import SearchModal from "@/components/SearchModal";
 
-export default function Header() {
+type HeaderProps = {
+  settings?: {
+    storeName?: string;
+    announcementBar?: string;
+    defaultCurrency?: string;
+  };
+};
+
+export default function Header({ settings }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
   const { cartCount } = useCart();
   const { wishlistCount } = useWishlist();
   const { currency, setCurrency } = useCurrency();
@@ -19,7 +28,8 @@ export default function Header() {
   return (
     <>
       <div className="top-strip">
-        Cash on Delivery Only • Premium women’s western clothing
+        {settings?.announcementBar ||
+          "Cash on Delivery Only • Premium women’s western clothing"}
       </div>
 
       <header className="navbar">
@@ -39,23 +49,28 @@ export default function Header() {
           </nav>
 
           <Link className="brand" href="/">
-            Luxentir
+            {settings?.storeName || "Luxentir"}
           </Link>
 
           <div className="nav-actions">
             <button
-              className={`icon-btn hide-sm ${currency === "PKR" ? "active" : ""}`}
+              className={`icon-btn hide-sm ${
+                currency === "PKR" ? "active" : ""
+              }`}
               onClick={() => setCurrency("PKR")}
             >
               PKR
             </button>
 
             <button
-              className={`icon-btn hide-sm ${currency === "USD" ? "active" : ""}`}
+              className={`icon-btn hide-sm ${
+                currency === "USD" ? "active" : ""
+              }`}
               onClick={() => setCurrency("USD")}
             >
               $
             </button>
+
             <button className="icon-btn" onClick={toggleTheme}>
               {theme === "dark" ? "☀" : "☾"}
             </button>
@@ -68,27 +83,17 @@ export default function Header() {
               🔍
             </button>
 
-            <Link
-              className="icon-btn wishlist-btn"
-              href="/wishlist"
-            >
+            <Link className="icon-btn wishlist-btn" href="/wishlist">
               ♡
               {wishlistCount > 0 && (
-                <span className="badge is-visible">
-                  {wishlistCount}
-                </span>
+                <span className="badge is-visible">{wishlistCount}</span>
               )}
             </Link>
 
-            <Link
-              className="icon-btn cart-btn"
-              href="/cart"
-            >
+            <Link className="icon-btn cart-btn" href="/cart">
               🛒
               {cartCount > 0 && (
-                <span className="badge is-visible">
-                  {cartCount}
-                </span>
+                <span className="badge is-visible">{cartCount}</span>
               )}
             </Link>
 
@@ -102,39 +107,31 @@ export default function Header() {
           <Link href="/search" onClick={() => setMenuOpen(false)}>
             Search
           </Link>
-
           <Link href="/account" onClick={() => setMenuOpen(false)}>
             Profile
           </Link>
-
           <Link href="/signin" onClick={() => setMenuOpen(false)}>
             Sign in
           </Link>
-
           <Link href="/signup" onClick={() => setMenuOpen(false)}>
             Sign up
           </Link>
-
           <Link href="/about" onClick={() => setMenuOpen(false)}>
             About us
           </Link>
-
           <Link href="/privacy-policy" onClick={() => setMenuOpen(false)}>
             Privacy Policy
           </Link>
-
           <Link href="/terms" onClick={() => setMenuOpen(false)}>
             Terms & Conditions
           </Link>
-
           <Link href="/exchange-and-returns" onClick={() => setMenuOpen(false)}>
             Exchange & Returns
           </Link>
         </div>
       </header>
-      {searchOpen && (
-        <SearchModal onClose={() => setSearchOpen(false)} />
-      )}
+
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
     </>
   );
 }

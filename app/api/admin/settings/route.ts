@@ -31,20 +31,18 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    await Promise.all(
-      Object.entries(body).map(([key, value]) =>
-        prisma.storeSetting.upsert({
-          where: { key },
-          update: {
-            value: JSON.stringify(value),
-          },
-          create: {
-            key,
-            value: JSON.stringify(value),
-          },
-        })
-      )
-    );
+    for (const [key, value] of Object.entries(body)) {
+      await prisma.storeSetting.upsert({
+        where: { key },
+        update: {
+          value: JSON.stringify(value),
+        },
+        create: {
+          key,
+          value: JSON.stringify(value),
+        },
+      });
+    }
 
     revalidatePath("/");
     revalidatePath("/admin/settings");
@@ -56,7 +54,7 @@ export async function POST(req: Request) {
     console.error("SAVE SETTINGS ERROR:", error);
 
     return NextResponse.json(
-      { message: "Settings could not be saved" },
+      { message: "Settings could not be saved", error: String(error) },
       { status: 500 }
     );
   }

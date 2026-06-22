@@ -8,10 +8,17 @@ import ReelsSection from "@/components/ReelsSection";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import WhyLuxentir from "@/components/WhyLuxentir";
 
+function isEnabled(sections: any[], key: string) {
+  const section = sections.find((item) => item.key === key);
+
+  return section?.enabled ?? true;
+}
+
 export default async function Home() {
   let products: any[] = [];
   let reels: any[] = [];
   let banners: any[] = [];
+  let sections: any[] = [];
 
   try {
     products = await prisma.product.findMany({
@@ -46,42 +53,46 @@ export default async function Home() {
         sortOrder: "asc",
       },
     });
+
+    sections = await prisma.homepageSection.findMany();
   } catch (error) {
     console.error("HOME DATA ERROR:", error);
   }
 
   return (
     <main>
-      <Hero banners={banners} />
+      {isEnabled(sections, "heroSection") && <Hero banners={banners} />}
 
-      <Categories />
+      {isEnabled(sections, "homepageCategories") && <Categories />}
 
-      <FeaturedCollection />
+      {isEnabled(sections, "featuredCollection") && <FeaturedCollection />}
 
-      <section className="section tight">
-        <div className="container">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">Best sellers</span>
-              <h2>Customer favorites</h2>
+      {isEnabled(sections, "bestSellers") && (
+        <section className="section tight">
+          <div className="container">
+            <div className="section-head">
+              <div>
+                <span className="eyebrow">Best sellers</span>
+                <h2>Customer favorites</h2>
+              </div>
+              <p>
+                Trending products loved for refined fits, soft tones and elegant
+                styling.
+              </p>
             </div>
-            <p>
-              Trending products loved for refined fits, soft tones and elegant
-              styling.
-            </p>
+
+            <div className="product-grid">
+              {products.map((product) => (
+                <ProductCard product={product as any} key={product.id} />
+              ))}
+            </div>
           </div>
+        </section>
+      )}
 
-          <div className="product-grid">
-            {products.map((product) => (
-              <ProductCard product={product as any} key={product.id} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {isEnabled(sections, "whyLuxentir") && <WhyLuxentir />}
 
-      <WhyLuxentir />
-
-      <ReelsSection reels={reels} />
+      {isEnabled(sections, "reelsSection") && <ReelsSection reels={reels} />}
     </main>
   );
 }

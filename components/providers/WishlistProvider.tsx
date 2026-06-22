@@ -30,8 +30,20 @@ export default function WishlistProvider({
     );
 
     if (saved) {
-      setWishlist(JSON.parse(saved));
+    try {
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+        setWishlist(
+          parsed
+            .map((item) => Number(item))
+            .filter((item) => Number.isFinite(item))
+        );
+      }
+    } catch {
+      localStorage.removeItem("luxentir-wishlist");
     }
+  }
   }, []);
 
   useEffect(() => {

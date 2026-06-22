@@ -7,8 +7,10 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function SiteShell({
   children,
+  settings,
 }: {
   children: React.ReactNode;
+  settings?: any;
 }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
@@ -19,9 +21,9 @@ export default function SiteShell({
 
   return (
     <>
-      <Header />
+      <Header settings={settings} />
       {children}
-      <Footer />
+      <Footer settings={settings} />
       <MobileBottomNav />
     </>
   );

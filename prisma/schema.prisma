@@ -121,7 +121,7 @@ model HomepageSection {
   key       String   @unique
   title     String?
   subtitle  String?
-  content   String?  @db.LongText
+  content   String   @db.LongText
   enabled   Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

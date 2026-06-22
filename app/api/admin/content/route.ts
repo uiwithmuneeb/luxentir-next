@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -7,7 +8,7 @@ export async function GET() {
 
     return NextResponse.json(sections);
   } catch (error) {
-    console.error(error);
+    console.error("CONTENT LOAD ERROR:", error);
 
     return NextResponse.json(
       { message: "Failed to load content" },
@@ -20,35 +21,36 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    for (const section of body.sections) {
+    for (const section of body.sections || []) {
       await prisma.homepageSection.upsert({
         where: {
-          key: section.key,
+          key: String(section.key),
         },
         update: {
-          title: section.title || "",
-          subtitle: section.subtitle || "",
-          content: section.content || "",
-          enabled: section.enabled,
+          title: String(section.title || ""),
+          subtitle: String(section.subtitle || ""),
+          content: "section-content",
+          enabled: Boolean(section.enabled),
         },
         create: {
-          key: section.key,
-          title: section.title || "",
-          subtitle: section.subtitle || "",
-          content: section.content || "",
-          enabled: section.enabled,
+          key: String(section.key),
+          title: String(section.title || ""),
+          subtitle: String(section.subtitle || ""),
+          content: "section-content",
+          enabled: Boolean(section.enabled),
         },
       });
     }
 
-    return NextResponse.json({
-      success: true,
-    });
+    revalidatePath("/");
+    revalidatePath("/admin/content");
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(error);
+    console.error("CONTENT SAVE ERROR:", error);
 
     return NextResponse.json(
-      { message: "Failed to save content" },
+      { message: "Failed to save content", error: String(error) },
       { status: 500 }
     );
   }
