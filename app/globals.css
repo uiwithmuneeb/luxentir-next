@@ -4435,3 +4435,16 @@ img {
 .hero-dots button.active {
   background: #fff;
 }
+
+.policy-content {
+  max-width: 980px;
+  margin-top: 22px;
+  font-size: 18px;
+  line-height: 1.85;
+  color: var(--muted);
+  white-space: pre-line;
+}
+
+.policy-content p {
+  margin-bottom: 18px;
+}

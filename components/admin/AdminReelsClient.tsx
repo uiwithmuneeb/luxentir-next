@@ -7,8 +7,11 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminReelsClient({ reels }: { reels: any[] }) {
   const router = useRouter();
+
   const [saving, setSaving] = useState(false);
   const [editingReel, setEditingReel] = useState<any>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -20,6 +23,7 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
 
   const resetForm = () => {
     setEditingReel(null);
+    setUploadError("");
     setForm({
       title: "",
       videoUrl: "",
@@ -29,8 +33,62 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
     });
   };
 
+  const uploadReelVideo = async (file: File) => {
+    setUploadError("");
+
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = async () => {
+      window.URL.revokeObjectURL(video.src);
+
+      if (video.duration < 5 || video.duration > 10) {
+        setUploadError("Reel duration must be between 5 and 10 seconds.");
+        return;
+      }
+
+      if (file.size > 50 * 1024 * 1024) {
+        setUploadError("Reel size must be less than 50MB.");
+        return;
+      }
+
+      setUploading(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/admin/upload/reel", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      setUploading(false);
+
+      if (!res.ok) {
+        setUploadError(data.message || "Upload failed");
+        return;
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        videoUrl: data.url,
+      }));
+    };
+
+    video.src = URL.createObjectURL(file);
+  };
+
   const saveReel = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setUploadError("");
+
+    if (!form.videoUrl.trim()) {
+      setUploadError("Please upload a reel video or paste a video URL.");
+      return;
+    }
+
     setSaving(true);
 
     const url = editingReel
@@ -68,18 +126,22 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
       <section className="admin-main">
         <AdminHeader
           title="Reels Management"
-          subtitle="Add, edit and manage homepage Instagram reels."
+          subtitle="Add, edit and manage homepage reels."
         />
 
         <div className="admin-panel">
           <div className="admin-panel-head">
             <div>
               <h2>{editingReel ? "Edit Reel" : "Add New Reel"}</h2>
-              <span>Use Instagram, TikTok, YouTube Shorts or video links</span>
+              <span>Upload a short video or paste a direct video URL.</span>
             </div>
 
             {editingReel && (
-              <button className="admin-secondary-btn" onClick={resetForm}>
+              <button
+                type="button"
+                className="admin-secondary-btn"
+                onClick={resetForm}
+              >
                 Cancel Edit
               </button>
             )}
@@ -127,19 +189,51 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
               </div>
 
               <div className="admin-field full">
-                <label>Video URL</label>
+                <label>Upload Reel Video</label>
                 <input
-                  required
+                  type="file"
+                  accept="video/mp4,video/quicktime,video/webm"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) uploadReelVideo(file);
+                  }}
+                />
+
+                <small>
+                  Allowed: MP4, MOV, WebM • Duration: 5–10 sec • Max size:
+                  50MB
+                </small>
+
+                {uploading && <p>Uploading reel...</p>}
+                {uploadError && <p className="admin-login-error">{uploadError}</p>}
+
+                <div style={{ margin: "14px 0", fontWeight: 800 }}>OR</div>
+
+                <label>Video URL (Optional)</label>
+                <input
                   value={form.videoUrl}
                   onChange={(e) =>
                     setForm({ ...form, videoUrl: e.target.value })
                   }
-                  placeholder="https://www.instagram.com/reel/..."
+                  placeholder="/uploads/reels/video.mp4 or direct .mp4 URL"
                 />
+
+                {form.videoUrl && (
+                  <video
+                    src={form.videoUrl}
+                    controls
+                    muted
+                    style={{
+                      width: "180px",
+                      borderRadius: "16px",
+                      marginTop: "12px",
+                    }}
+                  />
+                )}
               </div>
 
               <div className="admin-field full">
-                <label>Thumbnail Image URL</label>
+                <label>Thumbnail Image URL (Optional)</label>
                 <input
                   value={form.image}
                   onChange={(e) =>
@@ -154,7 +248,7 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
               <button
                 type="submit"
                 className="admin-primary-btn"
-                disabled={saving}
+                disabled={saving || uploading}
               >
                 {saving
                   ? "Saving..."
@@ -181,7 +275,9 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
               reels.map((reel) => (
                 <div className="admin-reel-card" key={reel.id}>
                   <div className="admin-reel-thumb">
-                    {reel.image ? (
+                    {reel.videoUrl ? (
+                      <video src={reel.videoUrl} muted playsInline />
+                    ) : reel.image ? (
                       <img src={reel.image} alt={reel.title} />
                     ) : (
                       <span>🎬</span>
@@ -193,14 +289,17 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
                     <p>Status: {reel.status}</p>
                     <p>Sort Order: {reel.sortOrder}</p>
 
-                    <a href={reel.videoUrl} target="_blank">
-                      Open Video
-                    </a>
+                    {reel.videoUrl && (
+                      <a href={reel.videoUrl} target="_blank">
+                        Open Video
+                      </a>
+                    )}
 
                     <div className="admin-actions">
                       <button
                         onClick={() => {
                           setEditingReel(reel);
+                          setUploadError("");
                           setForm({
                             title: reel.title,
                             videoUrl: reel.videoUrl,
@@ -213,9 +312,7 @@ export default function AdminReelsClient({ reels }: { reels: any[] }) {
                         Edit
                       </button>
 
-                      <button onClick={() => deleteReel(reel.id)}>
-                        Delete
-                      </button>
+                      <button onClick={() => deleteReel(reel.id)}>Delete</button>
                     </div>
                   </div>
                 </div>

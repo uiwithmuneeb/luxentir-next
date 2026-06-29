@@ -1,14 +1,55 @@
-export default function PrivacyPolicyPage() {
+import { getPolicyContent } from "@/lib/policy-content";
+
+export const dynamic = "force-dynamic";
+
+export default async function PrivacyPolicyPage() {
+  const page = await getPolicyContent("privacyPolicy");
+
+  if (!page.enabled) {
+    return <UnavailablePage title="Privacy Policy" />;
+  }
+
+  return (
+    <PolicyPage
+      eyebrow={page.eyebrow}
+      title={page.title}
+      content={page.content}
+    />
+  );
+}
+
+function PolicyPage({
+  eyebrow,
+  title,
+  content,
+}: {
+  eyebrow: string;
+  title: string;
+  content: string;
+}) {
   return (
     <main>
       <section className="inner-hero">
         <div className="container">
-          <span className="eyebrow">Privacy Policy</span>
-          <h1>Your privacy matters</h1>
-          <p>
-            We collect only the information required to process orders, provide
-            support and improve the Luxentir shopping experience.
-          </p>
+          <span className="eyebrow">{eyebrow}</span>
+          <h1>{title}</h1>
+          <div className="policy-content">
+            {content}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function UnavailablePage({ title }: { title: string }) {
+  return (
+    <main>
+      <section className="inner-hero">
+        <div className="container">
+          <span className="eyebrow">Unavailable</span>
+          <h1>{title}</h1>
+          <p>This page is currently unavailable.</p>
         </div>
       </section>
     </main>

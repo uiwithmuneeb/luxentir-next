@@ -29,14 +29,14 @@ export async function POST(req: Request) {
         update: {
           title: String(section.title || ""),
           subtitle: String(section.subtitle || ""),
-          content: "section-content",
+          content: String(section.content || section.subtitle || section.title || "Content"),
           enabled: Boolean(section.enabled),
         },
         create: {
           key: String(section.key),
           title: String(section.title || ""),
           subtitle: String(section.subtitle || ""),
-          content: "section-content",
+          content: String(section.content || section.subtitle || section.title || "Content"),
           enabled: Boolean(section.enabled),
         },
       });
@@ -44,6 +44,10 @@ export async function POST(req: Request) {
 
     revalidatePath("/");
     revalidatePath("/admin/content");
+    revalidatePath("/about");
+    revalidatePath("/privacy-policy");
+    revalidatePath("/terms");
+    revalidatePath("/exchange-and-returns");
 
     return NextResponse.json({ success: true });
   } catch (error) {

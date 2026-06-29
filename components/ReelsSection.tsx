@@ -18,7 +18,7 @@ export default function ReelsSection({
         <div className="section-head">
           <div>
             <span className="eyebrow">Follow @Luxentir</span>
-            <h2>Instagram Reels</h2>
+            <h2>Luxentir Reels</h2>
           </div>
 
           <a
@@ -32,29 +32,18 @@ export default function ReelsSection({
 
         <div className="reels-grid">
           {reels.map((reel) => (
-            <a
-              key={reel.id}
-              href={reel.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="reel-card"
-            >
-              {reel.image ? (
-                <img
-                  src={reel.image}
-                  alt={reel.title}
-                  className="reel-thumb"
-                />
-              ) : (
-                <div className="reel-placeholder">
-                  🎬
-                </div>
-              )}
+            <div className="reel-card" key={reel.id}>
+              <video
+                src={reel.videoUrl}
+                muted
+                loop
+                playsInline
+                autoPlay
+                poster={reel.image || undefined}
+              />
 
-              <div className="reel-overlay">
-                {reel.title}
-              </div>
-            </a>
+              <div className="reel-overlay">{reel.title}</div>
+            </div>
           ))}
         </div>
       </div>

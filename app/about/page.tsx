@@ -1,15 +1,55 @@
-export default function AboutPage() {
+import { getPolicyContent } from "@/lib/policy-content";
+
+export const dynamic = "force-dynamic";
+
+export default async function AboutPage() {
+  const page = await getPolicyContent("aboutUs");
+
+  if (!page.enabled) {
+    return <UnavailablePage title="About Us" />;
+  }
+
+  return (
+    <PolicyPage
+      eyebrow={page.eyebrow}
+      title={page.title}
+      content={page.content}
+    />
+  );
+}
+
+function PolicyPage({
+  eyebrow,
+  title,
+  content,
+}: {
+  eyebrow: string;
+  title: string;
+  content: string;
+}) {
   return (
     <main>
       <section className="inner-hero">
         <div className="container">
-          <span className="eyebrow">About Luxentir</span>
-          <h1>Luxury western wear for modern women</h1>
-          <p>
-            Luxentir is a premium women’s western clothing brand focused on
-            elegant silhouettes, refined styling and a boutique shopping
-            experience.
-          </p>
+          <span className="eyebrow">{eyebrow}</span>
+          <h1>{title}</h1>
+          <div className="policy-content">
+            {content}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function UnavailablePage({ title }: { title: string }) {
+  return (
+    <main>
+      <section className="inner-hero">
+        <div className="container">
+          <span className="eyebrow">Unavailable</span>
+          <h1>{title}</h1>
+          <p>This page is currently unavailable.</p>
         </div>
       </section>
     </main>
