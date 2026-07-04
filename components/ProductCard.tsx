@@ -47,7 +47,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="product-badges">
           {discount > 0 && <span className="discount-badge">-{discount}%</span>}
-          <span className="label">{product.badge}</span>
+          {product.badge && (
+              <span className="label">
+                  {product.badge}
+              </span>
+          )}
         </div>
 
         <button

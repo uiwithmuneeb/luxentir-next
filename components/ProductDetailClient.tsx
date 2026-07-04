@@ -73,16 +73,19 @@ export default function ProductDetailClient({
         <p>{product.description}</p>
 
         <ProductVariants
-          productId={product.id}
-          name={product.name}
-          category={
-            typeof product.category === "string"
-              ? product.category
-              : product.category?.name || "Uncategorized"
-          }
-          price={product.price}
-          image={activeImage}
-        />
+            productId={product.id}
+            name={product.name}
+            category={
+              typeof product.category === "string"
+                ? product.category
+                : product.category?.name || "Uncategorized"
+            }
+            price={product.price}
+            image={activeImage}
+            sizes={(product as any).sizes}
+            colors={(product as any).colors}
+            stock={(product as any).stock}
+          />
 
         <div className="fit-guides">
           <details className="chart-card">

@@ -26,15 +26,31 @@ export async function PUT(
         id: Number(id),
       },
       data: {
-        name: body.name,
-        slug: slugify(body.name),
-        price: Number(body.price),
-        comparePrice: body.comparePrice ? Number(body.comparePrice) : null,
-        badge: body.badge || "NEW",
-        status: body.status || "Active",
-        image: body.image || "",
-        description: body.description || "",
-        category: {
+          name: body.name,
+          slug: slugify(body.name),
+          price: Number(body.price),
+          comparePrice: body.comparePrice ? Number(body.comparePrice) : null,
+          badge: body.badge || "NEW",
+          status: body.status || "Active",
+          image: body.image || "",
+          description: body.description || "",
+
+          gallery: Array.isArray(body.gallery)
+            ? JSON.stringify(body.gallery)
+            : body.gallery || "[]",
+
+          sizes: Array.isArray(body.sizes)
+            ? JSON.stringify(body.sizes)
+            : body.sizes || "[]",
+
+          colors: Array.isArray(body.colors)
+            ? JSON.stringify(body.colors)
+            : body.colors || "[]",
+
+          stock: Number(body.stock || 0),
+          featured: Boolean(body.featured),
+
+          category: {
           connectOrCreate: {
             where: {
               slug: categorySlug,

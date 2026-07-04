@@ -4,15 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "./ProductCard";
 
-const categories = [
-  "All",
-  "Pants",
-  "Shirts",
-  "Blazers",
-  "Co-ords",
-  "Party Wear",
-];
-
 export default function ShopClient({
   products,
 }: {
@@ -23,6 +14,18 @@ export default function ShopClient({
   const [sortBy, setSortBy] = useState("default");
 
   const searchParams = useSearchParams();
+
+  const categories = useMemo(() => {
+    const names = products
+      .map((product) =>
+        typeof product.category === "string"
+          ? product.category
+          : product.category?.name
+      )
+      .filter(Boolean);
+
+    return ["All", ...Array.from(new Set(names))];
+  }, [products]);
 
   useEffect(() => {
     const category = searchParams.get("category");

@@ -3,13 +3,24 @@
 import { useState } from "react";
 import { useCart } from "./providers/CartProvider";
 
-const colors = [
-  { name: "Ivory", value: "#f5eee4" },
-  { name: "Black", value: "#111111" },
-  { name: "Gold", value: "#b9935b" },
-];
+const defaultColors = ["Ivory", "Black", "Gold"];
+const defaultSizes = ["XS", "S", "M", "L", "XL"];
 
-const sizes = ["XS", "S", "M", "L", "XL"];
+function parseArray(value?: string | string[] | null, fallback: string[] = []) {
+  if (Array.isArray(value)) return value;
+
+  if (!value) return fallback;
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+}
 
 export default function ProductVariants({
   productId,
@@ -17,17 +28,28 @@ export default function ProductVariants({
   category,
   price,
   image,
+  sizes,
+  colors,
+  stock,
 }: {
   productId: number;
   name: string;
   category: string;
   price: number;
   image: string;
+  sizes?: string | string[] | null;
+  colors?: string | string[] | null;
+  stock?: number;
 }) {
   const { addToCart } = useCart();
 
-  const [size, setSize] = useState("S");
-  const [color, setColor] = useState("Ivory");
+  const availableSizes = parseArray(sizes, defaultSizes);
+  const availableColors = parseArray(colors, defaultColors);
+
+  const [size, setSize] = useState(availableSizes[0] || "S");
+  const [color, setColor] = useState(availableColors[0] || "Ivory");
+
+  const isOutOfStock = Number(stock || 0) <= 0;
 
   return (
     <div className="variant-box">
@@ -38,15 +60,15 @@ export default function ProductVariants({
         </div>
       </div>
 
-      <div className="swatches">
-        {colors.map((item) => (
+      <div className="sizes">
+        {availableColors.map((item) => (
           <button
-            key={item.name}
-            className={`swatch ${color === item.name ? "active" : ""}`}
-            style={{ background: item.value }}
-            onClick={() => setColor(item.name)}
-            aria-label={item.name}
-          />
+            key={item}
+            className={`size ${color === item ? "active" : ""}`}
+            onClick={() => setColor(item)}
+          >
+            {item}
+          </button>
         ))}
       </div>
 
@@ -58,7 +80,7 @@ export default function ProductVariants({
       </div>
 
       <div className="sizes">
-        {sizes.map((item) => (
+        {availableSizes.map((item) => (
           <button
             key={item}
             className={`size ${size === item ? "active" : ""}`}
@@ -69,22 +91,28 @@ export default function ProductVariants({
         ))}
       </div>
 
-      <button
-        className="btn gold add-cart-wide"
-        onClick={() =>
-          addToCart({
-            id: productId,
-            name,
-            category,
-            price,
-            size,
-            color,
-            image,
-          })
-        }
-      >
-        Add To Cart
-      </button>
+      {isOutOfStock ? (
+        <button className="btn ghost add-cart-wide" disabled>
+          Out of Stock
+        </button>
+      ) : (
+        <button
+          className="btn gold add-cart-wide"
+          onClick={() =>
+            addToCart({
+              id: productId,
+              name,
+              category,
+              price,
+              size,
+              color,
+              image,
+            })
+          }
+        >
+          Add To Cart
+        </button>
+      )}
     </div>
   );
 }
