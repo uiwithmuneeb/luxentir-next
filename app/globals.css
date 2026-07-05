@@ -4771,3 +4771,42 @@ img {
     grid-column: 2;
   }
 }
+
+.track-price-summary {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(20, 20, 20, 0.12);
+  max-width: auto;
+  margin-left: auto;
+}
+
+.track-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 10px 0;
+  font-size: 15px;
+}
+
+.track-price-row span {
+  color: rgba(20, 20, 20, 0.65);
+}
+
+.track-price-row strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.track-price-row.grand {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(20, 20, 20, 0.12);
+}
+
+.track-price-row.grand span,
+.track-price-row.grand strong {
+  color: #111;
+  font-size: 20px;
+  font-weight: 800;
+}

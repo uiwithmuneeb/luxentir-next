@@ -23,6 +23,8 @@ type Order = {
   city: string;
   address: string;
   notes?: string | null;
+  country: string;
+  shippingCharge: number;
   total: number;
   payment: string;
   status: string;
@@ -51,6 +53,8 @@ export default function TrackOrderPage() {
   const [message, setMessage] = useState("");
 
   const activeStep = Math.max(0, steps.indexOf(order?.status || "Pending"));
+  const shippingCharge = Number(order?.shippingCharge || 0);
+  const subtotal = Number(order?.total || 0) - shippingCharge;
 
   const trackOrder = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -182,6 +186,11 @@ export default function TrackOrderPage() {
                 </div>
 
                 <div>
+                  <span>Country</span>
+                  <strong>{order.country || "Pakistan"}</strong>
+                </div>
+
+                <div>
                   <span>Payment</span>
                   <strong>{order.payment}</strong>
                 </div>
@@ -215,9 +224,21 @@ export default function TrackOrderPage() {
                 ))}
               </div>
 
-              <div className="track-total">
-                <span>Total Amount</span>
-                <strong>{formatPrice(order.total)}</strong>
+              <div className="track-price-summary">
+                <div className="track-price-row">
+                  <span>Subtotal</span>
+                  <strong>{formatPrice(subtotal)}</strong>
+                </div>
+
+                <div className="track-price-row">
+                  <span>Shipping ({order.country || "Pakistan"})</span>
+                  <strong>{formatPrice(shippingCharge)}</strong>
+                </div>
+
+                <div className="track-price-row grand">
+                  <span>Total Amount</span>
+                  <strong>{formatPrice(order.total)}</strong>
+                </div>
               </div>
 
               <div className="track-actions">

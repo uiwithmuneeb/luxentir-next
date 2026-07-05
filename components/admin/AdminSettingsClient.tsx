@@ -22,6 +22,10 @@ export default function AdminSettingsClient({
     facebookUrl: settings.facebookUrl || "",
     tiktokUrl: settings.tiktokUrl || "",
     defaultCurrency: settings.defaultCurrency || "PKR",
+
+    pakistanDeliveryCharge: settings.pakistanDeliveryCharge ?? 250,
+    internationalDeliveryCharge: settings.internationalDeliveryCharge ?? 30,
+
     announcementBar:
       settings.announcementBar ||
       "Cash on Delivery Only • Premium women’s western clothing",
@@ -210,13 +214,42 @@ export default function AdminSettingsClient({
                   onChange={(e) =>
                     setForm({
                       ...form,
-                      enableWhatsAppConfirmation:
-                        e.target.checked,
+                      enableWhatsAppConfirmation: e.target.checked,
                     })
                   }
                 />
                 Enable WhatsApp Order Confirmation
               </label>
+            </div>
+
+            <div className="admin-form-grid" style={{ marginTop: 20 }}>
+              <div className="admin-field">
+                <label>Pakistan Delivery Charges (PKR)</label>
+                <input
+                  type="number"
+                  value={form.pakistanDeliveryCharge}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      pakistanDeliveryCharge: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              <div className="admin-field">
+                <label>International Delivery Charges (USD)</label>
+                <input
+                  type="number"
+                  value={form.internationalDeliveryCharge}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      internationalDeliveryCharge: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
 

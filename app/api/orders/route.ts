@@ -5,11 +5,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { customer, items, total } = body;
+    const { customer, items, total, shippingCharge } = body;
 
-    const orderNumber = `LX-${Date.now()
-      .toString()
-      .slice(-6)}`;
+    const orderNumber = `LX-${Date.now().toString().slice(-6)}`;
 
     let existingCustomer = await prisma.customer.findUnique({
       where: {
@@ -25,6 +23,7 @@ export async function POST(req: Request) {
           phone: customer.phone,
           city: customer.city,
           address: customer.address,
+          country: customer.country || "Pakistan",
         },
       });
     }
@@ -38,8 +37,10 @@ export async function POST(req: Request) {
         email: customer.email || null,
         city: customer.city,
         address: customer.address,
+        country: customer.country || "Pakistan",
         notes: customer.notes || null,
-        total,
+        total: Number(total || 0),
+        shippingCharge: Number(shippingCharge || 0),
         payment: "COD",
         status: "Pending",
 
@@ -47,15 +48,14 @@ export async function POST(req: Request) {
           create: items.map((item: any) => ({
             productId: item.id,
             name: item.name,
-            price: item.price,
-            quantity: item.quantity,
+            price: Number(item.price),
+            quantity: Number(item.quantity),
             size: item.size,
             color: item.color,
             image: item.image,
           })),
         },
       },
-
       include: {
         items: true,
       },

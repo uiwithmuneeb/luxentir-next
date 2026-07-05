@@ -75,6 +75,7 @@ model Customer {
   name      String
   email     String?  @unique
   phone     String   @unique
+  country   String   @default("Pakistan")
   city      String?
   address   String?  @db.LongText
   createdAt DateTime @default(now())
@@ -83,22 +84,24 @@ model Customer {
 }
 
 model Order {
-  id           Int         @id @default(autoincrement())
-  orderNumber  String      @unique
-  customerId   Int?
-  customerName String
-  phone        String
-  email        String?
-  city         String
-  address      String      @db.LongText
-  notes        String?     @db.LongText
-  total        Float
-  payment      String      @default("COD")
-  status       String      @default("Pending")
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  customer     Customer?   @relation(fields: [customerId], references: [id])
-  items        OrderItem[]
+  id             Int         @id @default(autoincrement())
+  orderNumber    String      @unique
+  customerId     Int?
+  customerName   String
+  phone          String
+  email          String?
+  country        String      @default("Pakistan")
+  city           String
+  address        String      @db.LongText
+  notes          String?     @db.LongText
+  total          Float
+  shippingCharge Float       @default(0)
+  payment        String      @default("COD")
+  status         String      @default("Pending")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  items          OrderItem[]
 
   @@index([customerId], map: "Order_customerId_fkey")
 }

@@ -1,20 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, clearCart } = useCart();
-  const { formatPrice } = useCurrency();
+  const { clearCart } = useCart();
+  const { formatPrice, currency, setCurrency } = useCurrency();
+
+  const [settings, setSettings] = useState({
+    pakistanDeliveryCharge: 250,
+    internationalDeliveryCharge: 30,
+  });
 
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
+    country: "Pakistan",
     city: "",
     address: "",
     notes: "",
@@ -28,17 +33,43 @@ export default function CheckoutPage() {
     if (selected) {
       setCartProducts(JSON.parse(selected));
     }
+
+    async function loadSettings() {
+      const res = await fetch("/api/admin/settings");
+      const data = await res.json();
+
+      setSettings({
+        pakistanDeliveryCharge: Number(data.pakistanDeliveryCharge ?? 250),
+        internationalDeliveryCharge: Number(
+          data.internationalDeliveryCharge ?? 30
+        ),
+      });
+    }
+
+    loadSettings();
   }, []);
 
+  useEffect(() => {
+    if (form.country === "Pakistan") {
+      setCurrency("PKR");
+    } else {
+      setCurrency("USD");
+    }
+  }, [form.country, setCurrency]);
+
   const subtotal = cartProducts.reduce(
-    (total, item) =>
-      total + Number(item.price) * Number(item.quantity),
+    (total, item) => total + Number(item.price) * Number(item.quantity),
     0
   );
 
-  const handleSubmit = async (
-  e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const shippingCharge =
+    form.country === "Pakistan"
+      ? Number(settings.pakistanDeliveryCharge)
+      : Number(settings.internationalDeliveryCharge);
+
+  const grandTotal = subtotal + shippingCharge;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -50,16 +81,15 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           customer: form,
           items: cartProducts,
-          total: subtotal,
+          subtotal,
+          shippingCharge,
+          total: grandTotal,
         }),
       });
 
       const order = await response.json();
 
-      localStorage.setItem(
-        "luxentir-last-order",
-        JSON.stringify(order)
-      );
+      localStorage.setItem("luxentir-last-order", JSON.stringify(order));
 
       clearCart();
 
@@ -110,6 +140,18 @@ export default function CheckoutPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
+
+              <select
+                className="field"
+                value={form.country}
+                onChange={(e) =>
+                  setForm({ ...form, country: e.target.value })
+                }
+                required
+              >
+                <option value="Pakistan">Pakistan</option>
+                <option value="International">International</option>
+              </select>
 
               <input
                 className="field"
@@ -180,13 +222,16 @@ export default function CheckoutPage() {
             </div>
 
             <div className="summary-row">
-              <span>Shipping</span>
-              <strong>Free</strong>
+              <span>
+                Shipping{" "}
+                {form.country === "Pakistan" ? "(Pakistan)" : "(International)"}
+              </span>
+              <strong>{formatPrice(shippingCharge)}</strong>
             </div>
 
             <div className="summary-row total">
               <span>Total</span>
-              <strong>{formatPrice(subtotal)}</strong>
+              <strong>{formatPrice(grandTotal)}</strong>
             </div>
 
             <p className="checkout-note">
