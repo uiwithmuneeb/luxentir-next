@@ -87,61 +87,7 @@ export default function ProductDetailClient({
             stock={(product as any).stock}
           />
 
-        <div className="fit-guides">
-          <details className="chart-card">
-            <summary>Size chart</summary>
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Size</th>
-                    <th>Bust</th>
-                    <th>Waist</th>
-                    <th>Hip</th>
-                    <th>Length</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>XS</td>
-                    <td>32 in</td>
-                    <td>26 in</td>
-                    <td>35 in</td>
-                    <td>Regular</td>
-                  </tr>
-                  <tr>
-                    <td>S</td>
-                    <td>34 in</td>
-                    <td>28 in</td>
-                    <td>37 in</td>
-                    <td>Regular</td>
-                  </tr>
-                  <tr>
-                    <td>M</td>
-                    <td>36 in</td>
-                    <td>30 in</td>
-                    <td>39 in</td>
-                    <td>Regular</td>
-                  </tr>
-                  <tr>
-                    <td>L</td>
-                    <td>38 in</td>
-                    <td>32 in</td>
-                    <td>41 in</td>
-                    <td>Regular</td>
-                  </tr>
-                  <tr>
-                    <td>XL</td>
-                    <td>40 in</td>
-                    <td>34 in</td>
-                    <td>43 in</td>
-                    <td>Regular</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-        </div>
+            
 
         <div className="detail-actions">
           <AddToWishlistButton id={product.id} />

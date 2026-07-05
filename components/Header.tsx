@@ -97,9 +97,10 @@ export default function Header({ settings }: HeaderProps) {
               )}
             </Link>
 
-            <Link className="account-pill hide-sm" href="/track-order">
-              Track Order
-            </Link>
+          <Link className="account-pill hide-sm" href="/track-order">
+            <span className="tracking-dot"></span>
+            Track Order
+          </Link>
           </div>
         </div>
 

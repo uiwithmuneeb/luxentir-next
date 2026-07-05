@@ -77,10 +77,6 @@ export default function ProductCard({ product }: { product: Product }) {
           <Link href={`/product/${product.id}`}>{product.name}</Link>
         </h3>
 
-        <div className="stars">
-          ★★★★★ <span style={{ color: "var(--muted)" }}>(24)</span>
-        </div>
-
         <div className="price">
           <span>{formatPrice(product.price)}</span>
           {oldPrice > product.price && (

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
+import Lottie from "lottie-react";
+import trackingAnimation from "@/public/lottie/order-tracking.json";
 
 type OrderItem = {
   id: number;
@@ -121,8 +123,12 @@ export default function TrackOrderPage() {
                 required
               />
 
-              <button className="btn gold" type="submit" disabled={loading}>
-                {loading ? "Tracking..." : "Track Order"}
+              <button
+                className={`btn gold track-order-submit ${loading ? "is-loading" : ""}`}
+                type="submit"
+                disabled={loading}
+              >
+                <span>{loading ? "Tracking..." : "Track Order"}</span>
               </button>
             </form>
 
@@ -133,7 +139,19 @@ export default function TrackOrderPage() {
               WhatsApp confirmation message.
             </p>
           </div>
-
+          
+          {!order && (
+          <div className="tracking-empty-state">
+            <h2>Track your Luxentir order instantly</h2>
+            <div className="tracking-animation">
+              <Lottie
+                animationData={trackingAnimation}
+                loop
+                autoplay
+              />
+            </div>
+          </div>
+        )}
           {order && (
             <div className="track-result">
               <div className="track-summary-head">
