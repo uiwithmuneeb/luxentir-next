@@ -2,17 +2,14 @@
 
 import { useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
 
-const quickSearches = [
-  "Pants",
-  "Shirts",
-  "Blazers",
-  "Co-ords",
-  "Party Wear",
-];
-
-export default function SearchClient() {
+export default function SearchClient({
+  products,
+  categories,
+}: {
+  products: any[];
+  categories: any[];
+}) {
   const [query, setQuery] = useState("");
 
   const filteredProducts = useMemo(() => {
@@ -21,15 +18,21 @@ export default function SearchClient() {
     if (!value) return products;
 
     return products.filter((product) => {
+      const categoryName =
+        typeof product.category === "string"
+          ? product.category
+          : product.category?.name || "";
+
       const searchText = `
         ${product.name}
-        ${product.category}
-        ${product.badge}
+        ${categoryName}
+        ${product.badge || ""}
+        ${product.description || ""}
       `.toLowerCase();
 
       return searchText.includes(value);
     });
-  }, [query]);
+  }, [query, products]);
 
   return (
     <main>
@@ -38,8 +41,8 @@ export default function SearchClient() {
           <span className="eyebrow">Search Luxentir</span>
           <h1>Find your perfect look</h1>
           <p>
-            Search premium pants, shirts, blazers, co-ord sets and party wear
-            edits.
+            Search premium western wear by product name, category, style or
+            collection.
           </p>
         </div>
       </section>
@@ -60,9 +63,12 @@ export default function SearchClient() {
             </div>
 
             <div className="search-chips">
-              {quickSearches.map((item) => (
-                <button key={item} onClick={() => setQuery(item)}>
-                  {item}
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setQuery(category.name)}
+                >
+                  {category.name}
                 </button>
               ))}
             </div>
@@ -84,7 +90,7 @@ export default function SearchClient() {
           {filteredProducts.length === 0 ? (
             <div className="empty-state">
               <h3>No products found</h3>
-              <p>Try searching pants, blazer, co-ord or party wear.</p>
+              <p>Try searching by product name or category.</p>
 
               <button className="btn gold" onClick={() => setQuery("")}>
                 Clear Search
@@ -93,7 +99,7 @@ export default function SearchClient() {
           ) : (
             <div className="product-grid search-grid">
               {filteredProducts.map((product) => (
-                <ProductCard product={product} key={product.id} />
+                <ProductCard product={product as any} key={product.id} />
               ))}
             </div>
           )}

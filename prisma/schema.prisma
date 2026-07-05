@@ -18,14 +18,18 @@ model Admin {
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
-  name      String
-  slug      String    @unique
-  image     String?
-  status    String    @default("Active")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  products  Product[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  image       String?   @db.LongText
+  description String?   @db.LongText
+  featured    Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  status      String    @default("Active")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
 }
 
 model Product {

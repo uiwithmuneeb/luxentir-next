@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import ProductForm from "@/components/admin/ProductForm";
 import EditProductForm from "@/components/admin/EditProductForm";
-import { useRouter } from "next/navigation";
 
 export default function AdminProductsClient({
   products,
+  categories,
 }: {
   products: any[];
+  categories: any[];
 }) {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -85,7 +87,9 @@ export default function AdminProductsClient({
 
                   <button
                     onClick={async () => {
-                      const confirmed = window.confirm(`Delete ${product.name}?`);
+                      const confirmed = window.confirm(
+                        `Delete ${product.name}?`
+                      );
 
                       if (!confirmed) return;
 
@@ -104,11 +108,12 @@ export default function AdminProductsClient({
           </div>
         </div>
 
-        {showForm && <ProductForm />}
+        {showForm && <ProductForm categories={categories} />}
 
         {editingProduct && (
           <EditProductForm
             product={editingProduct}
+            categories={categories}
             onClose={() => setEditingProduct(null)}
           />
         )}

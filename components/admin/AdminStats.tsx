@@ -1,36 +1,31 @@
+type Props = {
+  totalProducts: number;
+  totalOrders: number;
+  pendingOrders: number;
+  revenue: number;
+};
+
 export default function AdminStats({
   totalProducts,
   totalOrders,
   pendingOrders,
-  totalCustomers,
   revenue,
-}: {
-  totalProducts: number;
-  totalOrders: number;
-  pendingOrders: number;
-  totalCustomers: number;
-  revenue: number;
-}) {
+}: Props) {
   const stats = [
     {
-      label: "Total Products",
+      label: "Products",
       value: totalProducts.toLocaleString(),
-      note: "Store products",
+      note: "Total catalog",
     },
     {
-      label: "Total Orders",
+      label: "Orders",
       value: totalOrders.toLocaleString(),
-      note: "COD orders",
+      note: "All COD orders",
     },
     {
       label: "Pending Orders",
       value: pendingOrders.toLocaleString(),
-      note: "Needs confirmation",
-    },
-    {
-      label: "Total Customers",
-      value: totalCustomers.toLocaleString(),
-      note: "Registered buyers",
+      note: "Need confirmation",
     },
     {
       label: "Revenue",

@@ -6,8 +6,10 @@ import ProductCard from "./ProductCard";
 
 export default function ShopClient({
   products,
+  categories,
 }: {
   products: any[];
+  categories: any[];
 }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
@@ -15,25 +17,17 @@ export default function ShopClient({
 
   const searchParams = useSearchParams();
 
-  const categories = useMemo(() => {
-    const names = products
-      .map((product) =>
-        typeof product.category === "string"
-          ? product.category
-          : product.category?.name
-      )
-      .filter(Boolean);
-
-    return ["All", ...Array.from(new Set(names))];
-  }, [products]);
+  const categoryNames = useMemo(() => {
+    return ["All", ...categories.map((category) => category.name)];
+  }, [categories]);
 
   useEffect(() => {
     const category = searchParams.get("category");
 
-    if (category && categories.includes(category)) {
+    if (category && categoryNames.includes(category)) {
       setActiveCategory(category);
     }
-  }, [searchParams]);
+  }, [searchParams, categoryNames]);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -100,7 +94,7 @@ export default function ShopClient({
       </div>
 
       <div className="category-filter">
-        {categories.map((category) => (
+        {categoryNames.map((category) => (
           <button
             key={category}
             className={`filter-btn ${
@@ -126,10 +120,7 @@ export default function ShopClient({
 
       <div className="product-grid">
         {filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product as any}
-          />
+          <ProductCard key={product.id} product={product as any} />
         ))}
       </div>
     </>

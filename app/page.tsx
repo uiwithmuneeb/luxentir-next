@@ -65,8 +65,6 @@ export default async function Home() {
 
       {isEnabled(sections, "homepageCategories") && <Categories />}
 
-      {isEnabled(sections, "featuredCollection") && <FeaturedCollection />}
-
       {isEnabled(sections, "bestSellers") && (
         <section className="section tight">
           <div className="container">
@@ -89,6 +87,8 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {isEnabled(sections, "featuredCollection") && <FeaturedCollection />}
 
       {isEnabled(sections, "whyLuxentir") && <WhyLuxentir />}
 

@@ -1,17 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { products } from "@/data/products";
+import { useEffect, useMemo, useState } from "react";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 
-export default function SearchModal({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function SearchModal({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<any[]>([]);
   const { formatPrice } = useCurrency();
+
+  useEffect(() => {
+    async function loadProducts() {
+      const res = await fetch("/api/search");
+      const data = await res.json();
+      setProducts(data);
+    }
+
+    loadProducts();
+  }, []);
 
   const results = useMemo(() => {
     const value = query.trim().toLowerCase();
@@ -19,10 +25,12 @@ export default function SearchModal({
     if (!value) return products.slice(0, 4);
 
     return products.filter((product) => {
-      const text = `${product.name} ${product.category} ${product.badge}`.toLowerCase();
+      const categoryName = product.category?.name || "";
+      const text = `${product.name} ${categoryName} ${product.badge || ""}`.toLowerCase();
+
       return text.includes(value);
     });
-  }, [query]);
+  }, [query, products]);
 
   return (
     <div className="search-modal-backdrop" onClick={onClose}>
@@ -40,7 +48,7 @@ export default function SearchModal({
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search pants, shirts, blazers..."
+            placeholder="Search products, categories, styles..."
           />
         </div>
 
@@ -48,7 +56,7 @@ export default function SearchModal({
           {results.length === 0 ? (
             <div className="empty-state">
               <h3>No products found</h3>
-              <p>Try searching for pants, shirts, blazers or party wear.</p>
+              <p>Try searching by product name or category.</p>
             </div>
           ) : (
             results.map((product) => (
@@ -62,7 +70,7 @@ export default function SearchModal({
 
                 <div>
                   <strong>{product.name}</strong>
-                  <p>{product.category}</p>
+                  <p>{product.category?.name || "No Category"}</p>
                 </div>
 
                 <span>{formatPrice(product.price)}</span>

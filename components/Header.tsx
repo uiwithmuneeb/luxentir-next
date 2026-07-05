@@ -97,8 +97,8 @@ export default function Header({ settings }: HeaderProps) {
               )}
             </Link>
 
-            <Link className="account-pill hide-sm" href="/account">
-              Sign in
+            <Link className="account-pill hide-sm" href="/track-order">
+              Track Order
             </Link>
           </div>
         </div>
@@ -110,8 +110,8 @@ export default function Header({ settings }: HeaderProps) {
           <Link href="/account" onClick={() => setMenuOpen(false)}>
             Profile
           </Link>
-          <Link href="/signin" onClick={() => setMenuOpen(false)}>
-            Sign in
+          <Link href="/track-order" onClick={() => setMenuOpen(false)}>
+            Track Order
           </Link>
           <Link href="/signup" onClick={() => setMenuOpen(false)}>
             Sign up

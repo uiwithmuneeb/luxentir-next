@@ -42,9 +42,11 @@ function parseArray(value?: string | null) {
 
 export default function EditProductForm({
   product,
+  categories,
   onClose,
 }: {
   product: Product;
+  categories: any[];
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -54,7 +56,7 @@ export default function EditProductForm({
 
   const [form, setForm] = useState({
     name: product.name || "",
-    category: product.category?.name || "Pants",
+    category: product.category?.name || categories?.[0]?.name || "",
     price: String(product.price || ""),
     comparePrice: product.comparePrice ? String(product.comparePrice) : "",
     badge: product.badge || "NEW",
@@ -136,7 +138,7 @@ export default function EditProductForm({
     setForm((prev) => ({
       ...prev,
       gallery: [...prev.gallery.split(",").filter(Boolean), ...uploaded].join(
-        ","
+        ",",
       ),
     }));
   }
@@ -207,12 +209,14 @@ export default function EditProductForm({
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
+              required
             >
-              <option value="Pants">Pants</option>
-              <option value="Shirts">Shirts</option>
-              <option value="Blazers">Blazers</option>
-              <option value="Co-ords">Co-ords</option>
-              <option value="Party Wear">Party Wear</option>
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -414,7 +418,11 @@ export default function EditProductForm({
         </div>
 
         <div className="admin-form-actions">
-          <button type="button" className="admin-secondary-btn" onClick={onClose}>
+          <button
+            type="button"
+            className="admin-secondary-btn"
+            onClick={onClose}
+          >
             Cancel
           </button>
 
@@ -426,8 +434,8 @@ export default function EditProductForm({
             {saving
               ? "Saving..."
               : uploadingMain || uploadingGallery
-              ? "Uploading..."
-              : "Save Changes"}
+                ? "Uploading..."
+                : "Save Changes"}
           </button>
         </div>
       </form>

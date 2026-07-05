@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -8,7 +9,6 @@ export default async function AdminPage() {
   let totalProducts = 0;
   let totalOrders = 0;
   let pendingOrders = 0;
-  let totalCustomers = 0;
   let revenue = 0;
   let recentOrders: any[] = [];
 
@@ -18,12 +18,8 @@ export default async function AdminPage() {
     totalOrders = await prisma.order.count();
 
     pendingOrders = await prisma.order.count({
-      where: {
-        status: "Pending",
-      },
+      where: { status: "Pending" },
     });
-
-    totalCustomers = await prisma.customer.count();
 
     const revenueData = await prisma.order.aggregate({
       _sum: {
@@ -50,14 +46,13 @@ export default async function AdminPage() {
       <section className="admin-main">
         <AdminHeader
           title="Dashboard Overview"
-          subtitle="Manage products, orders, customers and Luxentir storefront content."
+          subtitle="Manage products, orders and Luxentir storefront content."
         />
 
         <AdminStats
           totalProducts={totalProducts}
           totalOrders={totalOrders}
           pendingOrders={pendingOrders}
-          totalCustomers={totalCustomers}
           revenue={revenue}
         />
 
@@ -76,9 +71,7 @@ export default async function AdminPage() {
                   <div className="admin-table-row" key={order.id}>
                     <strong>{order.orderNumber}</strong>
                     <span>{order.customerName}</span>
-                    <span>
-                      PKR {order.total.toLocaleString()}
-                    </span>
+                    <span>PKR {order.total.toLocaleString()}</span>
                     <em>{order.status}</em>
                   </div>
                 ))
@@ -95,7 +88,6 @@ export default async function AdminPage() {
             <div className="admin-task-list">
               <p>✓ Products: {totalProducts}</p>
               <p>✓ Orders: {totalOrders}</p>
-              <p>✓ Customers: {totalCustomers}</p>
               <p>✓ Pending Orders: {pendingOrders}</p>
               <p>✓ Revenue: PKR {revenue.toLocaleString()}</p>
             </div>

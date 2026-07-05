@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-export default function ProductForm() {
+export default function ProductForm({
+  categories,
+}: {
+  categories: any[];
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -14,7 +18,7 @@ export default function ProductForm() {
   const [form, setForm] = useState({
     name: "",
     slug: "",
-    category: "Pants",
+    category: categories?.[0]?.name || "",
     status: "Active",
     price: "",
     comparePrice: "",
@@ -208,12 +212,14 @@ export default function ProductForm() {
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
+              required
             >
-              <option>Pants</option>
-              <option>Shirts</option>
-              <option>Blazers</option>
-              <option>Co-ords</option>
-              <option>Party Wear</option>
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
             </select>
           </div>
 

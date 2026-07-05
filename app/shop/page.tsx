@@ -1,10 +1,12 @@
 export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
 import ShopClient from "@/components/ShopClient";
 
 export default async function ShopPage() {
   let products: any[] = [];
+  let categories: any[] = [];
 
   try {
     products = await prisma.product.findMany({
@@ -18,8 +20,17 @@ export default async function ShopPage() {
         createdAt: "desc",
       },
     });
+
+    categories = await prisma.category.findMany({
+      where: {
+        status: "Active",
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+    });
   } catch (error) {
-    console.error("SHOP PRODUCTS ERROR:", error);
+    console.error("SHOP DATA ERROR:", error);
   }
 
   return (
@@ -38,7 +49,7 @@ export default async function ShopPage() {
       <section className="section">
         <div className="container">
           <Suspense fallback={<div className="shop-loading">Loading shop...</div>}>
-            <ShopClient products={products} />
+            <ShopClient products={products} categories={categories} />
           </Suspense>
         </div>
       </section>
