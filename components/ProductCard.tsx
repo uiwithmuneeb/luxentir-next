@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { useWishlist } from "@/components/providers/WishlistProvider";
 import QuickViewModal from "@/components/QuickViewModal";
+import ProductRating from "@/components/product/ProductRating";
 
 type Product = {
   id: number;
@@ -76,7 +77,10 @@ export default function ProductCard({ product }: { product: Product }) {
         <h3>
           <Link href={`/product/${product.id}`}>{product.name}</Link>
         </h3>
-
+        <ProductRating
+          productId={product.id}
+          compact
+        />
         <div className="price">
           <span>{formatPrice(product.price)}</span>
           {oldPrice > product.price && (

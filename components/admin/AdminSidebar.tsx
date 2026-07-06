@@ -47,6 +47,10 @@ const adminLinks = [
     icon: "✦",
   },
   {
+  label: "Reviews",
+    href: "/admin/reviews",
+  },
+  {
     label: "Settings",
     href: "/admin/settings",
     icon: "⚙",

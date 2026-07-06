@@ -5,6 +5,7 @@ import ProductGallery from "@/components/ProductGallery";
 import ProductVariants from "@/components/ProductVariants";
 import AddToWishlistButton from "@/components/AddToWishlistButton";
 import ProductPrice from "@/components/ProductPrice";
+import ProductRating from "@/components/product/ProductRating";
 
 type Product = {
   id: number;
@@ -61,9 +62,7 @@ export default function ProductDetailClient({
         <span className="eyebrow">New Season Collection</span>
         <h1>{product.name}</h1>
 
-        <div className="stars">
-          ★★★★★ <span style={{ color: "var(--muted)" }}>4.9 • 38 reviews</span>
-        </div>
+       <ProductRating productId={product.id} />
 
         <ProductPrice
           price={product.price}

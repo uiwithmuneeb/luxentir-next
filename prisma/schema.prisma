@@ -52,6 +52,7 @@ model Product {
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
   collections  ProductCollection[]
+  reviews      Review[]
   category     Category?   @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId], map: "Product_categoryId_fkey")
@@ -178,4 +179,19 @@ model ProductCollection {
   @@unique([productId, collectionId])
   @@index([productId])
   @@index([collectionId])
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  productId    Int
+  customerName String
+  rating       Int
+  comment      String   @db.LongText
+  status       String   @default("Pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }

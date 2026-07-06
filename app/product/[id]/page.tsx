@@ -3,6 +3,8 @@ import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import ProductReviews from "@/components/product/ProductReviews";
+import ProductRating from "@/components/product/ProductRating";
 
 type ProductPageProps = {
   params: Promise<{
@@ -56,12 +58,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
     take: 4,
   });
 
- let galleryImages: string[] = [];
+  let galleryImages: string[] = [];
 
   try {
-    galleryImages = product.gallery
-      ? JSON.parse(product.gallery)
-      : [];
+    galleryImages = product.gallery ? JSON.parse(product.gallery) : [];
   } catch {
     galleryImages = product.gallery
       ? product.gallery
@@ -71,10 +71,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
       : [];
   }
 
-  const productImages: string[] = [
-    product.image,
-    ...galleryImages,
-  ].filter(Boolean);
+  const productImages: string[] = [product.image, ...galleryImages].filter(
+    Boolean,
+  );
 
   return (
     <main>
@@ -82,6 +81,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="container fade-in">
           <span className="eyebrow">Product detail</span>
           <h1>{product.name}</h1>
+          <ProductRating productId={product.id} />
           <p>
             A refined Luxentir statement piece with product variants, image
             gallery, size guide and Cash on Delivery messaging.
@@ -90,10 +90,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </section>
 
       <section className="section">
-        <ProductDetailClient
-          product={product as any}
-          images={productImages}
-        />
+        <ProductDetailClient product={product as any} images={productImages} />
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <ProductReviews productId={product.id} />
+        </div>
       </section>
 
       <section className="section tight">
