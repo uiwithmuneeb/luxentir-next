@@ -51,6 +51,7 @@ model Product {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
+  collections  ProductCollection[]
   category     Category?   @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId], map: "Product_categoryId_fkey")
@@ -153,3 +154,28 @@ model StoreSetting {
   updatedAt DateTime @updatedAt
 }
 
+model Collection {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  slug        String              @unique
+  description String?             @db.LongText
+  image       String?             @db.LongText
+  status      String              @default("Active")
+  featured    Boolean             @default(false)
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  products    ProductCollection[]
+}
+
+model ProductCollection {
+  id           Int        @id @default(autoincrement())
+  productId    Int
+  collectionId Int
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, collectionId])
+  @@index([productId])
+  @@index([collectionId])
+}

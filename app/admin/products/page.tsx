@@ -6,11 +6,17 @@ import AdminProductsClient from "@/components/admin/AdminProductsClient";
 export default async function AdminProductsPage() {
   let products: any[] = [];
   let categories: any[] = [];
+  let collections: any[] = [];
 
   try {
     products = await prisma.product.findMany({
       include: {
         category: true,
+        collections: {
+          include: {
+            collection: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -18,6 +24,15 @@ export default async function AdminProductsPage() {
     });
 
     categories = await prisma.category.findMany({
+      where: {
+        status: "Active",
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+    });
+
+    collections = await prisma.collection.findMany({
       where: {
         status: "Active",
       },
@@ -33,6 +48,7 @@ export default async function AdminProductsPage() {
     <AdminProductsClient
       products={products}
       categories={categories}
+      collections={collections}
     />
   );
 }

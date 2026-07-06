@@ -6,8 +6,10 @@ import Image from "next/image";
 
 export default function ProductForm({
   categories,
+  collections,
 }: {
   categories: any[];
+  collections: any[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -28,6 +30,7 @@ export default function ProductForm({
     description: "",
     stock: "0",
     featured: false,
+    collections: [] as number[],
     sizes: ["XS", "S", "M", "L", "XL"],
     colors: ["Ivory", "Black", "Gold", "Beige", "White"],
   });
@@ -38,6 +41,15 @@ export default function ProductForm({
       [key]: prev[key].includes(value)
         ? prev[key].filter((item) => item !== value)
         : [...prev[key], value],
+    }));
+  };
+
+  const toggleCollection = (id: number) => {
+    setForm((prev) => ({
+      ...prev,
+      collections: prev.collections.includes(id)
+        ? prev.collections.filter((x) => x !== id)
+        : [...prev.collections, id],
     }));
   };
 
@@ -143,6 +155,7 @@ export default function ProductForm({
 
     const payload = {
       ...form,
+      collections: form.collections,
       status: saveAsDraft ? "Draft" : form.status,
       price: Number(form.price),
       comparePrice: form.comparePrice ? Number(form.comparePrice) : null,
@@ -222,6 +235,27 @@ export default function ProductForm({
               ))}
             </select>
           </div>
+
+          <div className="admin-field full">
+          <label>Collections</label>
+
+          <div className="admin-check-grid">
+            {collections.map((collection) => (
+              <label
+                key={collection.id}
+                className="admin-check-item"
+              >
+                <input
+                  type="checkbox"
+                  checked={form.collections.includes(collection.id)}
+                  onChange={() => toggleCollection(collection.id)}
+                />
+
+                {collection.name}
+              </label>
+            ))}
+          </div>
+        </div>
 
           <div className="admin-field">
             <label>Status</label>

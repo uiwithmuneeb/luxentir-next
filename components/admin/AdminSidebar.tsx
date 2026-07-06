@@ -16,9 +16,19 @@ const adminLinks = [
     icon: "◇",
   },
   {
+    label: "Orders",
+    href: "/admin/orders",
+    icon: "◎",
+  },
+  {
     label: "Categories",
     href: "/admin/categories",
     icon: "▣",
+  },
+  {
+    label: "Collections",
+    href: "/admin/collections",
+    icon: "◈",
   },
   {
     label: "Hero Banners",
@@ -30,16 +40,7 @@ const adminLinks = [
     href: "/admin/reels",
     icon: "🎬",
   },
-  {
-    label: "Orders",
-    href: "/admin/orders",
-    icon: "◎",
-  },
-  {
-    label: "Customers",
-    href: "/admin/customers",
-    icon: "◌",
-  },
+ 
   {
     label: "Content",
     href: "/admin/content",

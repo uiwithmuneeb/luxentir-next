@@ -10,9 +10,11 @@ import EditProductForm from "@/components/admin/EditProductForm";
 export default function AdminProductsClient({
   products,
   categories,
+  collections,
 }: {
   products: any[];
   categories: any[];
+  collections: any[];
 }) {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -108,12 +110,18 @@ export default function AdminProductsClient({
           </div>
         </div>
 
-        {showForm && <ProductForm categories={categories} />}
+        {showForm && (
+          <ProductForm
+            categories={categories}
+            collections={collections}
+          />
+        )}
 
         {editingProduct && (
           <EditProductForm
             product={editingProduct}
             categories={categories}
+            collections={collections}
             onClose={() => setEditingProduct(null)}
           />
         )}

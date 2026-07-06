@@ -64,6 +64,21 @@ export async function PUT(
       },
     });
 
+    await prisma.productCollection.deleteMany({
+      where: {
+        productId: Number(id),
+      },
+    });
+
+    if (body.collections?.length) {
+      await prisma.productCollection.createMany({
+        data: body.collections.map((collectionId: number) => ({
+          productId: Number(id),
+          collectionId,
+        })),
+      });
+    }
+
     revalidatePath("/");
     revalidatePath("/shop");
     revalidatePath("/admin/products");

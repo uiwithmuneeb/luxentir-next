@@ -4967,6 +4967,22 @@ img {
   }
 }
 
+.admin-thumb{
+    width:70px;
+    height:90px;
+    object-fit:cover;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,.08);
+}
+
+.admin-link{
+    color:var(--gold);
+    font-weight:600;
+}
+
+.admin-link:hover{
+    text-decoration:underline;
+}
 
 /* ===========================
    Track Order Empty State
@@ -5196,3 +5212,80 @@ img {
 }
 
 
+.admin-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.admin-image-preview img {
+  width: 160px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.admin-image-preview span {
+  color: var(--muted);
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.not-found-page {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 80px 0;
+}
+
+.not-found-card {
+  text-align: center;
+  max-width: 680px;
+}
+
+.not-found-card h1 {
+  margin: 12px 0;
+}
+
+.not-found-card p {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.collection-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.collection-meta span {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(191, 149, 63, 0.12);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.empty-state p {
+  color: var(--muted);
+  max-width: 460px;
+  margin: 0 auto 24px;
+}

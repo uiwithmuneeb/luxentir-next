@@ -10,6 +10,9 @@ type Product = {
     id: number;
     name: string;
   } | null;
+  collections?: {
+    collectionId: number;
+  }[];
   price: number;
   comparePrice?: number | null;
   image: string;
@@ -43,10 +46,12 @@ function parseArray(value?: string | null) {
 export default function EditProductForm({
   product,
   categories,
+  collections,
   onClose,
 }: {
   product: Product;
   categories: any[];
+  collections: any[];
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -56,6 +61,8 @@ export default function EditProductForm({
 
   const [form, setForm] = useState({
     name: product.name || "",
+    collections:
+    product.collections?.map((c) => c.collectionId) || [],
     category: product.category?.name || categories?.[0]?.name || "",
     price: String(product.price || ""),
     comparePrice: product.comparePrice ? String(product.comparePrice) : "",
@@ -80,6 +87,15 @@ export default function EditProductForm({
       [key]: prev[key].includes(value)
         ? prev[key].filter((item) => item !== value)
         : [...prev[key], value],
+    }));
+  };
+
+  const toggleCollection = (id: number) => {
+    setForm((prev) => ({
+      ...prev,
+      collections: prev.collections.includes(id)
+        ? prev.collections.filter((x) => x !== id)
+        : [...prev.collections, id],
     }));
   };
 
@@ -150,6 +166,7 @@ export default function EditProductForm({
     const body = {
       name: form.name,
       category: form.category,
+      collections: form.collections,
       price: Number(form.price),
       comparePrice: form.comparePrice ? Number(form.comparePrice) : null,
       badge: form.badge,
@@ -308,6 +325,27 @@ export default function EditProductForm({
                 }}
               />
             )}
+          </div>
+
+          <div className="admin-field full">
+            <label>Collections</label>
+
+            <div className="admin-check-grid">
+              {collections.map((collection) => (
+                <label
+                  key={collection.id}
+                  className="admin-check-item"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.collections.includes(collection.id)}
+                    onChange={() => toggleCollection(collection.id)}
+                  />
+
+                  {collection.name}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="admin-field full">

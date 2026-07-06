@@ -39,51 +39,65 @@ export async function POST(req: Request) {
 
 
   const product = await prisma.product.create({
-    data: {
-      name: body.name,
-      slug: finalSlug,
+  data: {
+    name: body.name,
+    slug: finalSlug,
 
-      category: {
-        connectOrCreate: {
-          where: {
-            slug: categorySlug,
-          },
-          create: {
-            name: body.category || "Uncategorized",
-            slug: categorySlug,
-          },
+    category: {
+      connectOrCreate: {
+        where: {
+          slug: categorySlug,
+        },
+        create: {
+          name: body.category || "Uncategorized",
+          slug: categorySlug,
         },
       },
-
-      price: Number(body.price),
-
-      comparePrice: body.comparePrice
-        ? Number(body.comparePrice)
-        : null,
-
-      badge: body.badge || "NEW",
-
-      description: body.description || "",
-
-      image: body.image || "",
-
-      gallery: galleryValue,
-
-      sizes: Array.isArray(body.sizes)
-        ? JSON.stringify(body.sizes)
-        : body.sizes || "[]",
-
-      colors: Array.isArray(body.colors)
-        ? JSON.stringify(body.colors)
-        : body.colors || "[]",
-
-      stock: Number(body.stock || 0),
-
-      status: body.status || "Active",
-
-      featured: Boolean(body.featured),
     },
-  });
+
+    price: Number(body.price),
+
+    comparePrice: body.comparePrice
+      ? Number(body.comparePrice)
+      : null,
+
+    badge: body.badge || "NEW",
+
+    description: body.description || "",
+
+    image: body.image || "",
+
+    gallery: galleryValue,
+
+    sizes: Array.isArray(body.sizes)
+      ? JSON.stringify(body.sizes)
+      : body.sizes || "[]",
+
+    colors: Array.isArray(body.colors)
+      ? JSON.stringify(body.colors)
+      : body.colors || "[]",
+
+    stock: Number(body.stock || 0),
+
+    status: body.status || "Active",
+
+    featured: Boolean(body.featured),
+
+    collections: {
+      create: (body.collections || []).map((collectionId: number) => ({
+        collection: {
+          connect: {
+            id: collectionId,
+          },
+        },
+      })),
+    },
+  },
+
+  include: {
+    collections: true,
+  },
+});
 
     return NextResponse.json(product);
   } catch (error) {
