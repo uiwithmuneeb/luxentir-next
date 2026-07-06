@@ -3413,6 +3413,7 @@ img {
   background: #fffaf4;
   font-size: 12px;
   color: #15120e;
+  white-space: nowrap;
 }
 
 .admin-form-actions {

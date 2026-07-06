@@ -51,7 +51,14 @@ export default function AdminOrdersClient({
               <span>Track customer orders and delivery status</span>
             </div>
 
-            <button className="admin-primary-btn">Export Orders</button>
+            <button
+              className="admin-primary-btn"
+              onClick={() => {
+                window.location.href = "/api/admin/orders/export";
+              }}
+            >
+              Export Orders
+            </button>
           </div>
 
           <div className="admin-orders-table">
