@@ -237,25 +237,43 @@ export default function ProductForm({
           </div>
 
           <div className="admin-field full">
-          <label>Collections</label>
+            <label>Collections</label>
 
-          <div className="admin-check-grid">
-            {collections.map((collection) => (
-              <label
-                key={collection.id}
-                className="admin-check-item"
-              >
-                <input
-                  type="checkbox"
-                  checked={form.collections.includes(collection.id)}
-                  onChange={() => toggleCollection(collection.id)}
-                />
+            <p
+              style={{
+                fontSize: "13px",
+                color: "#8b7355",
+                marginBottom: "14px",
+              }}
+            >
+              Select one or more collections for this product.
+            </p>
 
-                {collection.name}
-              </label>
-            ))}
+            <div className="admin-collection-grid">
+              {collections.map((collection) => (
+                <label
+                  key={collection.id}
+                  className={`admin-collection-card ${
+                    form.collections.includes(collection.id) ? "active" : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.collections.includes(collection.id)}
+                    onChange={() => toggleCollection(collection.id)}
+                  />
+
+                  <div className="admin-collection-content">
+                    <strong>{collection.name}</strong>
+
+                    <span>
+                      {collection.description || "Premium Collection"}
+                    </span>
+                  </div>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
 
           <div className="admin-field">
             <label>Status</label>
@@ -494,8 +512,8 @@ export default function ProductForm({
             {loading
               ? "Saving..."
               : uploadingMain || uploadingGallery
-              ? "Uploading..."
-              : "Publish Product"}
+                ? "Uploading..."
+                : "Publish Product"}
           </button>
         </div>
       </form>

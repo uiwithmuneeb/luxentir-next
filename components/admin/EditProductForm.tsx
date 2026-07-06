@@ -61,8 +61,7 @@ export default function EditProductForm({
 
   const [form, setForm] = useState({
     name: product.name || "",
-    collections:
-    product.collections?.map((c) => c.collectionId) || [],
+    collections: product.collections?.map((c) => c.collectionId) || [],
     category: product.category?.name || categories?.[0]?.name || "",
     price: String(product.price || ""),
     comparePrice: product.comparePrice ? String(product.comparePrice) : "",
@@ -330,11 +329,23 @@ export default function EditProductForm({
           <div className="admin-field full">
             <label>Collections</label>
 
-            <div className="admin-check-grid">
+            <p
+              style={{
+                fontSize: "13px",
+                color: "#8b7355",
+                marginBottom: "14px",
+              }}
+            >
+              Select one or more collections for this product.
+            </p>
+
+            <div className="admin-collection-grid">
               {collections.map((collection) => (
                 <label
                   key={collection.id}
-                  className="admin-check-item"
+                  className={`admin-collection-card ${
+                    form.collections.includes(collection.id) ? "active" : ""
+                  }`}
                 >
                   <input
                     type="checkbox"
@@ -342,7 +353,13 @@ export default function EditProductForm({
                     onChange={() => toggleCollection(collection.id)}
                   />
 
-                  {collection.name}
+                  <div className="admin-collection-content">
+                    <strong>{collection.name}</strong>
+
+                    <span>
+                      {collection.description || "Premium Collection"}
+                    </span>
+                  </div>
                 </label>
               ))}
             </div>
