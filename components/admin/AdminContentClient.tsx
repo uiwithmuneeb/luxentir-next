@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { useAdminToast } from "@/components/admin/AdminToast";
 
 const defaultSections = [
   {
@@ -118,6 +119,7 @@ const defaultSections = [
 
 export default function AdminContentClient({ sections }: { sections: any[] }) {
   const router = useRouter();
+  const { showToast } = useAdminToast();
   const [saving, setSaving] = useState(false);
 
   const mergedSections = defaultSections.map((item) => {
@@ -164,8 +166,14 @@ export default function AdminContentClient({ sections }: { sections: any[] }) {
     });
 
     setSaving(false);
+
+    showToast({
+      type: "success",
+      title: "Content Saved",
+      message: "Content settings updated successfully.",
+    });
+
     router.refresh();
-    alert("Content settings saved successfully.");
   };
 
   const homepageContent = contentSections.filter(

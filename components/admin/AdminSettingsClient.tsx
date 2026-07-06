@@ -4,13 +4,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { useAdminToast } from "@/components/admin/AdminToast";
 
 export default function AdminSettingsClient({
   settings,
 }: {
   settings: Record<string, any>;
 }) {
+  return <SettingsContent settings={settings} />;
+}
+
+function SettingsContent({ settings }: { settings: Record<string, any> }) {
   const router = useRouter();
+  const { showToast } = useAdminToast();
   const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
@@ -34,8 +40,7 @@ export default function AdminSettingsClient({
       "Premium women’s western online clothing shop with clean silhouettes, luxury styling and Cash on Delivery only.",
     enableCOD: settings.enableCOD ?? true,
     enableFreeShipping: settings.enableFreeShipping ?? true,
-    enableWhatsAppConfirmation:
-      settings.enableWhatsAppConfirmation ?? true,
+    enableWhatsAppConfirmation: settings.enableWhatsAppConfirmation ?? true,
   });
 
   const saveSettings = async () => {
@@ -51,7 +56,11 @@ export default function AdminSettingsClient({
 
     setSaving(false);
     router.refresh();
-    alert("Settings saved successfully.");
+    showToast({
+      type: "success",
+      title: "Settings Saved",
+      message: "Store settings updated successfully.",
+    });
   };
 
   return (
