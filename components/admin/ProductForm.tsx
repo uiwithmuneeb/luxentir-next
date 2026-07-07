@@ -58,9 +58,9 @@ export default function ProductForm({
 
     const data = new FormData();
     data.append("file", file);
-    data.append("type", "products");
+    data.append("folder", "products");
 
-    const res = await fetch("/api/admin/upload/product-image", {
+    const res = await fetch("/api/admin/upload", {
       method: "POST",
       body: data,
     });
@@ -100,7 +100,7 @@ export default function ProductForm({
       const data = new FormData();
 
       data.append("file", file);
-      data.append("type", "gallery");
+      data.append("folder", "gallery");
 
       const res = await fetch("/api/admin/upload/product-image", {
         method: "POST",

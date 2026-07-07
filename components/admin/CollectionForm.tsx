@@ -42,8 +42,9 @@ export default function CollectionForm() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("folder", "collections");
 
-    const res = await fetch("/api/admin/upload/collection", {
+    const res = await fetch("/api/admin/upload", {
       method: "POST",
       body: formData,
     });
