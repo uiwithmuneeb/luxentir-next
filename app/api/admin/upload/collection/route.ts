@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
 
 export async function POST(req: Request) {
   try {
@@ -17,24 +22,15 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      "collections"
-    );
+    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-    await mkdir(uploadDir, { recursive: true });
-
-    const ext = file.name.split(".").pop() || "jpg";
-    const fileName = `collection-${Date.now()}.${ext}`;
-
-    const filePath = path.join(uploadDir, fileName);
-
-    await writeFile(filePath, buffer);
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: "luxentir/collections",
+      resource_type: "image",
+    });
 
     return NextResponse.json({
-      url: `/uploads/collections/${fileName}`,
+      url: result.secure_url,
     });
   } catch (error) {
     console.error("COLLECTION IMAGE UPLOAD ERROR:", error);

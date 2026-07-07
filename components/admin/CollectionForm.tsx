@@ -48,7 +48,18 @@ export default function CollectionForm() {
       body: formData,
     });
 
-    const data = await res.json();
+    const text = await res.text();
+
+    let data: any = {};
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.error(text);
+      setUploading(false);
+      setMessage("Server JSON return nahi kar raha.");
+      return;
+    }
     setUploading(false);
 
     if (!res.ok) {
