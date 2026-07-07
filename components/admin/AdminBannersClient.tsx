@@ -5,12 +5,10 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { useRouter } from "next/navigation";
 
-export default function AdminBannersClient({
-  banners,
-}: {
-  banners: any[];
-}) {
+export default function AdminBannersClient({ banners }: { banners: any[] }) {
   const router = useRouter();
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -24,20 +22,54 @@ export default function AdminBannersClient({
 
   const [editingBanner, setEditingBanner] = useState<any>(null);
 
+  const uploadBannerImage = async (file: File) => {
+    setUploading(true);
+    setMessage("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "banners");
+
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setUploading(false);
+
+    if (!res.ok) {
+      setMessage(data.message || "Banner image upload failed.");
+      return;
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      image: data.url,
+    }));
+  };
+
   const saveBanner = async () => {
+    setMessage("");
+
     const endpoint = editingBanner
       ? `/api/admin/banners/${editingBanner.id}`
       : "/api/admin/banners";
 
     const method = editingBanner ? "PUT" : "POST";
 
-    await fetch(endpoint, {
+    const res = await fetch(endpoint, {
       method,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
     });
+
+    if (!res.ok) {
+      setMessage("Banner could not be saved.");
+      return;
+    }
 
     router.refresh();
 
@@ -52,6 +84,7 @@ export default function AdminBannersClient({
     });
 
     setEditingBanner(null);
+    setMessage("Banner saved successfully.");
   };
 
   return (
@@ -67,13 +100,8 @@ export default function AdminBannersClient({
         <div className="admin-panel">
           <div className="admin-panel-head">
             <div>
-              <h2>
-                {editingBanner ? "Edit Banner" : "Add New Banner"}
-              </h2>
-
-              <span>
-                Homepage hero slider management
-              </span>
+              <h2>{editingBanner ? "Edit Banner" : "Add New Banner"}</h2>
+              <span>Homepage hero slider management</span>
             </div>
           </div>
 
@@ -82,12 +110,7 @@ export default function AdminBannersClient({
               className="field"
               placeholder="Banner Title"
               value={form.title}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  title: e.target.value,
-                })
-              }
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
             />
 
             <input
@@ -95,10 +118,7 @@ export default function AdminBannersClient({
               placeholder="Button Text"
               value={form.buttonText}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  buttonText: e.target.value,
-                })
+                setForm({ ...form, buttonText: e.target.value })
               }
             />
 
@@ -106,12 +126,7 @@ export default function AdminBannersClient({
               className="field"
               placeholder="Banner Subtitle"
               value={form.subtitle}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  subtitle: e.target.value,
-                })
-              }
+              onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
             />
 
             <input
@@ -119,24 +134,40 @@ export default function AdminBannersClient({
               placeholder="Button Link"
               value={form.buttonLink}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  buttonLink: e.target.value,
-                })
+                setForm({ ...form, buttonLink: e.target.value })
               }
             />
 
-            <input
-              className="field"
-              placeholder="Banner Image URL"
-              value={form.image}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  image: e.target.value,
-                })
-              }
-            />
+            <div className="admin-field full">
+              <label>Banner Image</label>
+
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadBannerImage(file);
+                }}
+              />
+
+              {uploading && (
+                <p className="admin-form-message">Uploading banner image...</p>
+              )}
+
+              <input
+                className="field"
+                placeholder="Banner Image URL"
+                value={form.image}
+                onChange={(e) => setForm({ ...form, image: e.target.value })}
+              />
+
+              {form.image && (
+                <div className="admin-image-preview">
+                  <img src={form.image} alt="Banner preview" />
+                  <span>{form.image}</span>
+                </div>
+              )}
+            </div>
 
             <input
               className="field"
@@ -154,17 +185,14 @@ export default function AdminBannersClient({
             <select
               className="field"
               value={form.status}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  status: e.target.value,
-                })
-              }
+              onChange={(e) => setForm({ ...form, status: e.target.value })}
             >
               <option>Active</option>
               <option>Inactive</option>
             </select>
           </div>
+
+          {message && <p className="admin-form-message">{message}</p>}
 
           <div
             style={{
@@ -176,10 +204,9 @@ export default function AdminBannersClient({
             <button
               className="admin-primary-btn"
               onClick={saveBanner}
+              disabled={uploading}
             >
-              {editingBanner
-                ? "Update Banner"
-                : "Save Banner"}
+              {editingBanner ? "Update Banner" : "Save Banner"}
             </button>
           </div>
         </div>
@@ -187,30 +214,18 @@ export default function AdminBannersClient({
         <div className="admin-panel">
           <div className="admin-panel-head">
             <h2>Hero Banners</h2>
-
-            <span>
-              Total banners: {banners.length}
-            </span>
+            <span>Total banners: {banners.length}</span>
           </div>
 
           <div className="admin-products-table">
             {banners.map((banner) => (
-              <div
-                key={banner.id}
-                className="admin-products-row"
-              >
+              <div key={banner.id} className="admin-products-row">
                 <div className="admin-product-cell">
-                  <img
-                    src={banner.image}
-                    alt={banner.title}
-                  />
+                  <img src={banner.image} alt={banner.title} />
 
                   <div>
                     <strong>{banner.title}</strong>
-
-                    <p>
-                      Sort Order: {banner.sortOrder}
-                    </p>
+                    <p>Sort Order: {banner.sortOrder}</p>
                   </div>
                 </div>
 
@@ -225,13 +240,10 @@ export default function AdminBannersClient({
                         title: banner.title,
                         subtitle: banner.subtitle || "",
                         image: banner.image,
-                        buttonText:
-                          banner.buttonText || "",
-                        buttonLink:
-                          banner.buttonLink || "",
+                        buttonText: banner.buttonText || "",
+                        buttonLink: banner.buttonLink || "",
                         status: banner.status,
-                        sortOrder:
-                          banner.sortOrder || 0,
+                        sortOrder: banner.sortOrder || 0,
                       });
                     }}
                   >
@@ -240,12 +252,9 @@ export default function AdminBannersClient({
 
                   <button
                     onClick={async () => {
-                      await fetch(
-                        `/api/admin/banners/${banner.id}`,
-                        {
-                          method: "DELETE",
-                        }
-                      );
+                      await fetch(`/api/admin/banners/${banner.id}`, {
+                        method: "DELETE",
+                      });
 
                       router.refresh();
                     }}
