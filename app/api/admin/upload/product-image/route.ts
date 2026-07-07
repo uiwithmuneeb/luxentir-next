@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+function fileToBase64(file: File) {
+  return file.arrayBuffer().then((buffer) => {
+    const base64 = Buffer.from(buffer).toString("base64");
+    return `data:${file.type};base64,${base64}`;
+  });
+}
 
 export async function GET() {
   return NextResponse.json({
-    message: "Product image upload API is working",
+    message: "Cloudinary product image upload API is working",
   });
 }
 
@@ -36,31 +48,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const folder = type === "gallery" ? "gallery" : "products";
-    const uploadDir = path.join(process.cwd(), "public", "uploads", folder);
+    const folder = type === "gallery" ? "luxentir/gallery" : "luxentir/products";
+    const base64File = await fileToBase64(file);
 
-    await mkdir(uploadDir, { recursive: true });
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const extension = file.name.split(".").pop() || "jpg";
-    const safeName = file.name
-      .replace(/\.[^/.]+$/, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-
-    const fileName = `${Date.now()}-${safeName}.${extension}`;
-    const filePath = path.join(uploadDir, fileName);
-
-    await writeFile(filePath, buffer);
+    const result = await cloudinary.uploader.upload(base64File, {
+      folder,
+      resource_type: "image",
+      transformation: [
+        {
+          quality: "auto",
+          fetch_format: "auto",
+        },
+      ],
+    });
 
     return NextResponse.json({
-      url: `/uploads/${folder}/${fileName}`,
+      url: result.secure_url,
+      publicId: result.public_id,
     });
   } catch (error) {
-    console.error("PRODUCT IMAGE UPLOAD ERROR:", error);
+    console.error("CLOUDINARY PRODUCT IMAGE UPLOAD ERROR:", error);
 
     return NextResponse.json(
       { message: "Image could not be uploaded", error: String(error) },
